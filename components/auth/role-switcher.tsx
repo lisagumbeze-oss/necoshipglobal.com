@@ -37,8 +37,8 @@ export function RoleSwitcher({ variant = "light" }: Props) {
   const labelClass = variant === "dark" ? "text-slate-300" : "text-slate-600";
   const selectClass =
     variant === "dark"
-      ? "rounded-input border border-white/20 bg-white/10 px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand-blue"
-      : "rounded-input border border-slate-300 bg-white px-2 py-1 text-sm text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-blue";
+      ? "rounded-input border border-white/20 bg-white/10 px-2 py-1 text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand-yellow"
+      : "rounded-input border border-slate-300 bg-white px-2 py-1 text-sm text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-yellow";
 
   return (
     <div className="flex flex-wrap items-center gap-2">

@@ -40,13 +40,13 @@ export default function AboutPage() {
 
         <section>
           <h2 className="mb-6 font-display text-2xl font-bold text-brand-navy">Our story</h2>
-          <div className="relative border-l-2 border-brand-blue/40 pl-6">
+          <div className="relative border-l-2 border-brand-yellow/40 pl-6">
             {milestones.map((m) => (
               <div key={m.year} className="relative mb-8 last:mb-0">
-                <span className="absolute -left-[31px] top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue text-[10px] font-bold text-white">
+                <span className="absolute -left-[31px] top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-yellow text-[10px] font-bold text-white">
                   {m.year.slice(2)}
                 </span>
-                <p className="text-xs font-semibold uppercase tracking-wide text-brand-blue">{m.year}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-yellow">{m.year}</p>
                 <p className="font-semibold text-brand-navy">{m.title}</p>
                 <p className="mt-1 text-sm text-slate-600">{m.detail}</p>
               </div>
@@ -66,7 +66,7 @@ export default function AboutPage() {
                     .join("")}
                 </div>
                 <p className="font-semibold text-brand-navy">{l.name}</p>
-                <p className="text-xs font-medium text-brand-blue">{l.role}</p>
+                <p className="text-xs font-medium text-brand-yellow">{l.role}</p>
                 <p className="text-sm text-slate-600">{l.bio}</p>
               </Card>
             ))}
@@ -103,7 +103,7 @@ export default function AboutPage() {
         </section>
 
         <div className="text-center">
-          <Link href="/contact" className="text-sm font-semibold text-brand-blue underline">
+          <Link href="/contact" className="text-sm font-semibold text-brand-yellow underline">
             Talk to our enterprise team
           </Link>
         </div>

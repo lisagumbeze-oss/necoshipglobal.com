@@ -94,7 +94,7 @@ export default function CustomersPage() {
             >
               {row.original.status === "Active" ? "Suspend" : "Activate"}
             </Button>
-            <Link href={`/admin/customers/${row.original.id}` as never} className="text-xs font-semibold text-brand-blue underline">
+            <Link href={`/admin/customers/${row.original.id}` as never} className="text-xs font-semibold text-brand-navy underline">
               Open
             </Link>
           </div>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { RoleSwitcher } from "@/components/auth/role-switcher";
-import { BRAND } from "@/lib/brand";
-import { Radio, Search, Shield } from "lucide-react";
+import { BrandLogo } from "@/components/brand/brand-logo";
+import { Radio, Search } from "lucide-react";
 
 const overview = [
   { label: "Command Center", href: "/admin" },
@@ -70,11 +70,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen bg-[#F3F6FA] text-brand-navy xl:grid xl:grid-cols-[280px_1fr]">
       <aside className="hidden border-r border-slate-800 bg-brand-navy xl:flex xl:flex-col">
         <div className="border-b border-white/10 px-5 py-5">
-          <div className="flex items-center gap-2">
-            <Shield size={16} className="text-emerald-300" aria-hidden />
-            <p className="font-display text-base font-bold text-white">{BRAND.name}</p>
-          </div>
-          <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.14em] text-slate-400">Operations console</p>
+          <Link href={"/admin" as never} aria-label="Neco Ship Global admin">
+            <BrandLogo variant="lockup-on-dark" size="sm" />
+          </Link>
+          <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.14em] text-brand-yellow">Operations console</p>
         </div>
         <nav className="flex-1 space-y-5 overflow-y-auto px-3 py-5" aria-label="Admin dashboard">
           <AdminNavGroup title="Overview" items={overview} />
@@ -100,7 +99,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <input
                 aria-label="Admin global search"
                 placeholder="Tracking, customer, ticket, staff…"
-                className="h-9 w-full rounded-md border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-brand-navy outline-none placeholder:text-slate-400 focus:border-brand-blue focus:bg-white"
+                className="h-9 w-full rounded-md border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm text-brand-navy outline-none placeholder:text-slate-400 focus:border-brand-yellow focus:bg-white"
               />
             </div>
             <button

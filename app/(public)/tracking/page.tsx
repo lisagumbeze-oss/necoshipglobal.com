@@ -137,7 +137,7 @@ function TrackingContent() {
                 {STEPS.map((step, index) => (
                   <div
                     key={step}
-                    className={`rounded-input px-2 py-2 text-center text-[11px] ${index <= doneIdx ? "bg-brand-blue text-white" : "bg-slate-100 text-slate-500"}`}
+                    className={`rounded-input px-2 py-2 text-center text-[11px] ${index <= doneIdx ? "bg-brand-yellow text-brand-navy" : "bg-slate-100 text-slate-500"}`}
                   >
                     {step}
                   </div>
@@ -154,7 +154,7 @@ function TrackingContent() {
               <div className="space-y-3">
                 {(primary.events ?? []).map((event) => (
                   <div key={`${event.occurredAt}-${event.description}`} className="flex gap-3 text-sm">
-                    <Package size={16} className="mt-1 text-brand-blue" />
+                    <Package size={16} className="mt-1 text-brand-yellow" />
                     <div>
                       <p className="font-medium text-brand-navy">{event.description}</p>
                       <p className="text-slate-500">
@@ -203,7 +203,7 @@ function TrackingContent() {
                   />
                 </div>
                 {primary.recipientToken ? (
-                  <Link href={`/recipient/${primary.recipientToken}` as never} className="text-sm text-brand-blue underline">
+                  <Link href={`/recipient/${primary.recipientToken}` as never} className="text-sm text-brand-navy underline">
                     Open recipient portal
                   </Link>
                 ) : null}

@@ -9,9 +9,9 @@ export function HeroRoutesVisual() {
       <svg className="h-full w-full" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid slice">
         <defs>
           <linearGradient id="routeGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#1E6BFF" stopOpacity="0" />
-            <stop offset="50%" stopColor="#1E6BFF" stopOpacity="0.85" />
-            <stop offset="100%" stopColor="#1E6BFF" stopOpacity="0" />
+            <stop offset="0%" stopColor="#F8E000" stopOpacity="0" />
+            <stop offset="50%" stopColor="#F8E000" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#F8E000" stopOpacity="0" />
           </linearGradient>
         </defs>
         <g fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)" strokeWidth="1">
@@ -45,7 +45,7 @@ export function HeroRoutesVisual() {
           [880, 360],
           [320, 320]
         ].map(([cx, cy], i) => (
-          <circle key={i} cx={cx} cy={cy} r="5" fill="#1E6BFF" className="animate-pulse" />
+          <circle key={i} cx={cx} cy={cy} r="5" fill="#F8E000" className="animate-pulse" />
         ))}
       </svg>
     </div>

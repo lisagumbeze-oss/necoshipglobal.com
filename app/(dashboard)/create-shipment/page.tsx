@@ -152,7 +152,7 @@ export default function CreateShipmentPage() {
             return (
               <div
                 key={label}
-                className={`rounded-input px-3 py-2 text-center text-sm ${active ? "bg-brand-blue text-white" : "bg-slate-200 text-slate-600"}`}
+                className={`rounded-input px-3 py-2 text-center text-sm ${active ? "bg-brand-yellow text-brand-navy" : "bg-slate-200 text-slate-600"}`}
               >
                 {label}
               </div>
@@ -206,7 +206,7 @@ export default function CreateShipmentPage() {
                     setServiceType(service.id);
                     setAmountCents(service.cents);
                   }}
-                  className={`rounded-card border p-4 text-left ${serviceType === service.id ? "border-brand-blue bg-blue-50" : "border-slate-200"}`}
+                  className={`rounded-card border p-4 text-left ${serviceType === service.id ? "border-brand-yellow bg-yellow-50" : "border-slate-200"}`}
                 >
                   <p className="font-semibold">{service.label}</p>
                   <p className="text-sm text-slate-600">${(service.cents / 100).toFixed(2)}</p>

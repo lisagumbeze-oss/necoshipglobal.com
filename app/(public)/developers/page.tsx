@@ -52,7 +52,7 @@ export default function DevelopersPage() {
             {paths.map(([path, methods]) =>
               Object.entries(methods).map(([method, op]) => (
                 <li key={`${method}-${path}`} className="grid gap-1 px-3 py-2 md:grid-cols-[90px_1fr]">
-                  <span className="font-mono text-xs font-semibold uppercase text-brand-blue">{method}</span>
+                  <span className="font-mono text-xs font-semibold uppercase text-brand-yellow">{method}</span>
                   <div>
                     <p className="font-mono text-xs text-brand-navy">{path}</p>
                     <p className="text-xs text-slate-500">{op.summary ?? "—"}</p>

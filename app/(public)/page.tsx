@@ -198,7 +198,7 @@ export default function HomePage() {
             </Card>
           </motion.div>
         </div>
-        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-brand-blue/30 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-brand-yellow/30 blur-3xl" />
       </section>
 
       {/* Trust bar */}
@@ -227,7 +227,7 @@ export default function HomePage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/25 to-transparent" />
                 </div>
                 <div className="flex items-start gap-3 p-4">
-                  <div className="rounded-input bg-blue-50 p-2 text-brand-blue">
+                  <div className="rounded-input bg-yellow-50 p-2 text-brand-navy">
                     <Icon size={18} aria-hidden />
                   </div>
                   <p className="text-sm font-medium text-brand-slate">{label}</p>
@@ -278,7 +278,7 @@ export default function HomePage() {
             {["Create Shipment", "We Pick Up", "In-Transit Updates", "Delivered"].map((step, index) => (
               <Card key={step} className="relative overflow-hidden">
                 <div className="absolute right-2 top-2 font-display text-4xl font-bold text-slate-100">{index + 1}</div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-brand-blue">Step {index + 1}</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-brand-yellow">Step {index + 1}</p>
                 <p className="mt-2 font-semibold text-brand-navy">{step}</p>
                 <p className="mt-2 text-xs text-slate-500">
                   {index === 0 && "Book online with guided customs and packaging checks."}
@@ -388,10 +388,10 @@ export default function HomePage() {
               {pricingPlans.map((plan) => (
                 <Card
                   key={plan.tier}
-                  className={`flex flex-col ${plan.highlight ? "border-2 border-brand-blue bg-blue-50/50" : ""}`}
+                  className={`flex flex-col ${plan.highlight ? "border-2 border-brand-yellow bg-yellow-50/50" : ""}`}
                 >
                   <p className="font-semibold text-brand-navy">{plan.tier}</p>
-                  <p className="font-display text-2xl font-bold text-brand-blue">
+                  <p className="font-display text-2xl font-bold text-brand-navy">
                     {billingMode === "monthly" ? plan.monthly : plan.annual}
                     {plan.tier !== "Enterprise" ? (
                       <span className="text-sm font-normal text-slate-500">{billingMode === "monthly" ? "/mo" : "/yr"}</span>

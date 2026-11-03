@@ -125,7 +125,7 @@ export default function CustomsQueuePage() {
                         key={r.id}
                         type="button"
                         className={`grid w-full grid-cols-12 items-center gap-2 px-4 py-3 text-left text-sm hover:bg-slate-50 ${
-                          selected?.id === r.id ? "bg-blue-50" : ""
+                          selected?.id === r.id ? "bg-yellow-50" : ""
                         }`}
                         onClick={() => setSelectedId(r.id)}
                       >
@@ -145,7 +145,7 @@ export default function CustomsQueuePage() {
                         <div className="col-span-1 flex justify-end">
                           <Link
                             href={`/admin/shipments/${r.id}` as never}
-                            className="text-xs font-semibold text-brand-blue underline"
+                            className="text-xs font-semibold text-brand-navy underline"
                             onClick={(e) => e.stopPropagation()}
                           >
                             Open

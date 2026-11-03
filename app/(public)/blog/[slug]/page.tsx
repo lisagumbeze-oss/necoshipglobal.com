@@ -18,7 +18,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     <main className="min-h-screen bg-brand-surface px-4 py-10 md:px-8">
       <article className="mx-auto max-w-3xl">
         <p className="text-xs text-slate-500">
-          <Link href="/blog" className="text-brand-blue underline">
+          <Link href="/blog" className="text-brand-navy underline">
             Resource Center
           </Link>{" "}
           / {post.category}
@@ -47,13 +47,13 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
           <p className="text-sm text-slate-600">{post.excerpt}</p>
           <div className="flex flex-wrap gap-2 text-xs">
             <span className="font-medium text-slate-500">Share:</span>
-            <button type="button" className="text-brand-blue underline">
+            <button type="button" className="text-brand-navy underline">
               LinkedIn
             </button>
-            <button type="button" className="text-brand-blue underline">
+            <button type="button" className="text-brand-navy underline">
               X
             </button>
-            <button type="button" className="text-brand-blue underline">
+            <button type="button" className="text-brand-navy underline">
               Copy link
             </button>
           </div>
@@ -61,7 +61,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
         <nav className="mt-10 rounded-card border border-slate-200 bg-white p-4" aria-label="Table of contents">
           <p className="text-sm font-semibold text-brand-navy">Table of contents</p>
-          <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-brand-blue">
+          <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-brand-yellow">
             {post.headings.map((h) => (
               <li key={h}>
                 <a href={`#${h.replace(/\s+/g, "-").toLowerCase()}`} className="hover:underline">
@@ -86,7 +86,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             {related.map((r) => (
               <Card key={r.slug}>
-                <Link href={`/blog/${r.slug}`} className="font-semibold text-brand-navy hover:text-brand-blue">
+                <Link href={`/blog/${r.slug}`} className="font-semibold text-brand-navy hover:text-brand-yellow">
                   {r.title}
                 </Link>
                 <p className="mt-1 text-xs text-slate-500">{r.category}</p>
@@ -97,7 +97,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
         <p className="mt-10 text-center text-sm text-slate-500">
           More questions?{" "}
-          <Link href="/contact" className="font-semibold text-brand-blue underline">
+          <Link href="/contact" className="font-semibold text-brand-navy underline">
             Contact {BRAND.name}
           </Link>
         </p>

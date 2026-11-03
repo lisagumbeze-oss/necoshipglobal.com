@@ -117,7 +117,7 @@ export default function RevenueFinancePage() {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Line type="monotone" dataKey="revenue" stroke="#1E6BFF" strokeWidth={2} />
+                  <Line type="monotone" dataKey="revenue" stroke="#062853" strokeWidth={2} />
                   <Line type="monotone" dataKey="cost" stroke="#EF4444" strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
@@ -133,7 +133,7 @@ export default function RevenueFinancePage() {
                   <XAxis dataKey="region" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="value" fill="#0B1F3A" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="value" fill="#062853" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { Badge, Button, Card, Input } from "@/components/design-system/ui";
 import { OTPInput } from "@/components/auth/otp-input";
 import { BRAND } from "@/lib/brand";
@@ -45,6 +46,7 @@ export default function TwoFactorSetupPage() {
 
   return (
     <main className="space-y-5 p-2">
+      <BrandLogo variant="lockup" size="md" priority />
       <header className="space-y-1">
         <h1 className="font-display text-3xl font-bold text-brand-navy">Two-Factor Setup</h1>
         <p className="text-sm text-slate-600">Protect your account with authenticator verification and backup codes.</p>

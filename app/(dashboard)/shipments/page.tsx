@@ -125,7 +125,7 @@ export default function MyShipmentsPage() {
         header: "Action",
         id: "action",
         cell: ({ row }) => (
-          <Link href={`/shipments/${row.original.id}` as never} className="text-brand-blue underline">
+          <Link href={`/shipments/${row.original.id}` as never} className="text-brand-navy underline">
             View
           </Link>
         )

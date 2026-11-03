@@ -48,7 +48,7 @@ export function MapboxLivePanel({
 
       points.forEach((p) => {
         const markerNode = document.createElement("div");
-        markerNode.className = "h-2.5 w-2.5 rounded-full bg-brand-blue shadow-[0_0_0_6px_rgba(30,107,255,0.2)]";
+        markerNode.className = "h-2.5 w-2.5 rounded-full bg-brand-yellow shadow-[0_0_0_6px_rgba(248,224,0,0.35)]";
         new mapboxgl.Marker(markerNode).setLngLat([p.lng, p.lat]).setPopup(new mapboxgl.Popup().setText(p.label)).addTo(map);
       });
 

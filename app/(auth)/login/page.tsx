@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import { signIn } from "next-auth/react";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { Button, Card, Input } from "@/components/design-system/ui";
 import { BRAND } from "@/lib/brand";
 
@@ -69,6 +70,7 @@ function LoginForm() {
 
   return (
     <main className="space-y-5 p-2">
+      <BrandLogo variant="lockup" size="md" priority />
       <header className="space-y-1">
         <h1 className="font-display text-3xl font-bold text-brand-navy">Sign In</h1>
         <p className="text-sm text-slate-600">Access your {BRAND.name} dashboard and live shipment controls.</p>
@@ -116,7 +118,7 @@ function LoginForm() {
               <input type="checkbox" />
               Remember me
             </span>
-            <Link href="/forgot-password" className="text-brand-blue underline">
+            <Link href="/forgot-password" className="text-brand-navy underline">
               Forgot Password?
             </Link>
           </label>
@@ -131,7 +133,7 @@ function LoginForm() {
         </Button>
         <p className="text-center text-sm text-slate-600">
           New user?{" "}
-          <Link href="/register" className="text-brand-blue underline">
+          <Link href="/register" className="text-brand-navy underline">
             Create an account
           </Link>
         </p>

@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { Badge, Button, Card, Input } from "@/components/design-system/ui";
 import { BRAND } from "@/lib/brand";
 import { OTPInput } from "@/components/auth/otp-input";
@@ -106,6 +107,7 @@ export default function RegisterPage() {
 
   return (
     <main className="space-y-5 p-2">
+      <BrandLogo variant="lockup" size="md" priority />
       <header className="space-y-1">
         <h1 className="font-display text-3xl font-bold text-brand-navy">Create Account</h1>
         <p className="text-sm text-slate-600">Choose your account type and complete onboarding for {BRAND.name}.</p>
@@ -119,7 +121,7 @@ export default function RegisterPage() {
               key={type}
               type="button"
               onClick={() => setSelectedType(type)}
-              className={`rounded-card border p-3 text-left text-sm ${selectedType === type ? "border-brand-blue bg-blue-50" : "border-slate-200"}`}
+              className={`rounded-card border p-3 text-left text-sm ${selectedType === type ? "border-brand-yellow bg-yellow-50" : "border-slate-200"}`}
             >
               <p className="font-semibold">{type}</p>
             </button>
@@ -160,11 +162,11 @@ export default function RegisterPage() {
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={accepted} onChange={(e) => setAccepted(e.target.checked)} />
           I accept the{" "}
-          <Link href={"/terms" as never} className="text-brand-blue underline">
+          <Link href={"/terms" as never} className="text-brand-navy underline">
             Terms
           </Link>{" "}
           and{" "}
-          <Link href={"/privacy" as never} className="text-brand-blue underline">
+          <Link href={"/privacy" as never} className="text-brand-navy underline">
             Privacy Policy
           </Link>
           .

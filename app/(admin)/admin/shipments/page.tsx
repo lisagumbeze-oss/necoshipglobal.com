@@ -150,7 +150,7 @@ export default function AdminShipmentsPage() {
         header: "Actions",
         id: "actions",
         cell: ({ row }) => (
-          <Link href={`/admin/shipments/${row.original.id}` as never} className="text-xs font-semibold text-brand-blue underline">
+          <Link href={`/admin/shipments/${row.original.id}` as never} className="text-xs font-semibold text-brand-navy underline">
             View
           </Link>
         )

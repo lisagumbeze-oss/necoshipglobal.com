@@ -59,7 +59,7 @@ function money(n: number) {
 }
 
 function statusColor(status: string) {
-  if (status === "In Transit") return "#1E6BFF";
+  if (status === "In Transit") return "#F8E000";
   if (status === "Delivered") return "#10B981";
   if (status === "Exception") return "#EF4444";
   if (status === "Customs Hold") return "#F59E0B";
@@ -186,7 +186,7 @@ export default function AdminDashboardPage() {
               <p className="font-semibold text-brand-navy">Priority queue</p>
               <p className="text-xs text-slate-500">Unassigned exceptions requiring staff action</p>
             </div>
-            <Link href={"/admin/exceptions" as never} className="text-xs font-semibold text-brand-blue">
+            <Link href={"/admin/exceptions" as never} className="text-xs font-semibold text-brand-navy">
               Exceptions console
             </Link>
           </div>
@@ -245,7 +245,7 @@ export default function AdminDashboardPage() {
                 <XAxis dataKey="day" hide />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="revenueUsd" stroke="#0B1F3A" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="revenueUsd" stroke="#062853" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -259,7 +259,7 @@ export default function AdminDashboardPage() {
                 <XAxis type="number" />
                 <YAxis type="category" dataKey="country" width={70} />
                 <Tooltip />
-                <Bar dataKey="count" fill="#1E6BFF" radius={[4, 4, 4, 4]} />
+                <Bar dataKey="count" fill="#F8E000" radius={[4, 4, 4, 4]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -271,7 +271,7 @@ export default function AdminDashboardPage() {
               <PieChart>
                 <Pie data={charts.carrierMix} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70}>
                   {charts.carrierMix.map((entry, i) => (
-                    <Cell key={entry.name} fill={["#0B1F3A", "#1E6BFF", "#10B981", "#F59E0B", "#EF4444"][i % 5]} />
+                    <Cell key={entry.name} fill={["#062853", "#F8E000", "#10B981", "#F59E0B", "#EF4444"][i % 5]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -287,7 +287,7 @@ export default function AdminDashboardPage() {
             <div className="flex items-center gap-2 font-semibold text-brand-navy">
               <AlertTriangle size={15} className="text-amber-500" aria-hidden /> Flagged shipments
             </div>
-            <Link href={"/admin/shipments" as never} className="text-xs font-semibold text-brand-blue">
+            <Link href={"/admin/shipments" as never} className="text-xs font-semibold text-brand-navy">
               All shipments
             </Link>
           </div>
@@ -305,7 +305,7 @@ export default function AdminDashboardPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge tone={s.status === "Exception" ? "danger" : "warning"}>{s.status}</Badge>
-                    <Link href={`/admin/shipments/${s.id}` as never} className="text-xs font-semibold text-brand-blue">
+                    <Link href={`/admin/shipments/${s.id}` as never} className="text-xs font-semibold text-brand-navy">
                       Open
                     </Link>
                   </div>
@@ -321,7 +321,7 @@ export default function AdminDashboardPage() {
               <div className="flex items-center gap-2 font-semibold text-brand-navy">
                 <Ticket size={15} aria-hidden /> Support queue
               </div>
-              <Link href={"/admin/support" as never} className="text-xs font-semibold text-brand-blue">
+              <Link href={"/admin/support" as never} className="text-xs font-semibold text-brand-navy">
                 Desk
               </Link>
             </div>

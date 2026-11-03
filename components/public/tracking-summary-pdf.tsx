@@ -16,7 +16,7 @@ type ShipmentRecord = {
 };
 
 const styles = StyleSheet.create({
-  page: { padding: 24, fontSize: 11, color: "#0B1F3A" },
+  page: { padding: 24, fontSize: 11, color: "#062853" },
   heading: { fontSize: 18, marginBottom: 10 },
   block: { marginBottom: 8, padding: 8, border: "1 solid #CBD5E1", borderRadius: 4 },
   key: { fontSize: 10, color: "#475569" },

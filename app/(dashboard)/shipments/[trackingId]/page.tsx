@@ -96,7 +96,7 @@ export default function ShipmentDetailPage() {
     <main className="min-h-screen bg-brand-surface p-4 md:p-8">
       <section className="mx-auto max-w-7xl space-y-4">
         <p className="text-xs text-slate-500">My Shipments / {shipment.id}</p>
-        <Card className="flex flex-wrap items-center justify-between gap-3 bg-blue-50">
+        <Card className="flex flex-wrap items-center justify-between gap-3 bg-yellow-50">
           <div>
             <p className="text-xs text-slate-500">Current Status</p>
             <h1 className="font-display text-2xl font-bold text-brand-navy">

@@ -2,6 +2,8 @@
 
 **Neco Ship Global (NECO)** — `www.necoshipglobal.com` · `support@necoshipglobal.com`
 
+Brand: navy `#062853` + canary yellow `#F8E000` · logo assets in `public/brand/`.
+
 Production-oriented Next.js 14 shipping & tracking platform (marketing site, shipper dashboard, admin ops).
 
 ## Stack

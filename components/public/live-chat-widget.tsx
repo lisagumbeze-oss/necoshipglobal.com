@@ -18,7 +18,7 @@ export function LiveChatWidget() {
         >
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-blue text-sm font-bold text-white">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-yellow text-sm font-bold text-white">
                 SK
               </div>
               <div>
@@ -50,7 +50,7 @@ export function LiveChatWidget() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="focus-ring flex items-center gap-2 rounded-full bg-brand-blue px-4 py-3 text-sm font-semibold text-white shadow-layered hover:bg-blue-600"
+        className="focus-ring flex items-center gap-2 rounded-full bg-brand-yellow px-4 py-3 text-sm font-semibold text-white shadow-layered hover:bg-blue-600"
         aria-expanded={open}
         aria-controls="live-chat-panel"
       >

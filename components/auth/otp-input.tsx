@@ -47,7 +47,7 @@ export function OTPInput({
           value={digits.clean}
           disabled={disabled}
           onChange={(e) => onChange(e.target.value)}
-          className="focus-ring absolute inset-0 h-12 w-full rounded-input border border-slate-300 bg-transparent px-3 font-mono text-sm text-transparent caret-brand-blue"
+          className="focus-ring absolute inset-0 h-12 w-full rounded-input border border-slate-300 bg-transparent px-3 font-mono text-sm text-transparent caret-brand-yellow"
           aria-label={label}
         />
         <div

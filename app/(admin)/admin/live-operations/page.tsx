@@ -19,7 +19,7 @@ type LiveOpsRecord = {
 };
 
 const statusBreakdown = [
-  { name: "In Transit", value: 422, color: "#1E6BFF" },
+  { name: "In Transit", value: 422, color: "#F8E000" },
   { name: "Delivered", value: 801, color: "#10B981" },
   { name: "Exception", value: 41, color: "#EF4444" },
   { name: "Customs Hold", value: 57, color: "#F59E0B" }

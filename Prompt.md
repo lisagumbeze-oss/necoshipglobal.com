@@ -11,15 +11,16 @@ COMPANY: USA-based international courier and freight company
 BRAND AESTHETIC: Premium logistics — clean, authoritative, trustworthy. 
 Think FedEx meets Stripe. 
 
-COLOR PALETTE:
-  - Primary: Deep Navy #0B1F3A
-  - Accent: Electric Blue #1E6BFF  
+COLOR PALETTE (from official NECO logo):
+  - Primary: Deep Navy #062853
+  - Accent: Canary Yellow #F8E000
   - Secondary: Slate Gray #4A5568
   - Success: Emerald #10B981
   - Warning: Amber #F59E0B
   - Danger: Red #EF4444
   - Background: Off-White #F8FAFC
   - Dark Mode BG: #0D1117
+  - CTA rule: primary buttons = yellow fill + navy text (never white-on-yellow)
 
 TYPOGRAPHY:
   - Display/Headings: Sora or Clash Display (bold, modern, geometric)

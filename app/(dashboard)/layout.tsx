@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { RoleSwitcher } from "@/components/auth/role-switcher";
-import { BRAND } from "@/lib/brand";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { WelcomeTour } from "@/components/onboarding/welcome-tour";
 import { Bell, Package, Search } from "lucide-react";
 
@@ -44,7 +44,7 @@ function NavGroup({
         <Link
           key={item.href}
           href={item.href as never}
-          className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-blue-50 hover:text-brand-navy"
+          className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-yellow-50 hover:text-brand-navy"
         >
           {item.label}
         </Link>
@@ -58,8 +58,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-[#F4F7FB] pb-20 lg:grid lg:grid-cols-[260px_1fr] lg:pb-0">
       <aside className="hidden border-r border-slate-200/80 bg-white lg:flex lg:flex-col">
         <div className="border-b border-slate-100 px-5 py-5">
-          <p className="font-display text-lg font-bold text-brand-navy">{BRAND.name}</p>
-          <p className="mt-1 text-xs font-medium text-brand-blue">Shipper workspace</p>
+          <Link href={"/dashboard" as never} aria-label="Neco Ship Global dashboard">
+            <BrandLogo variant="horizontal" size="sm" />
+          </Link>
+          <p className="mt-2 text-xs font-medium text-brand-navy/70">Shipper workspace</p>
         </div>
         <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-5" aria-label="Shipper dashboard">
           <NavGroup title="Shipping" items={shippingNav} />
@@ -68,7 +70,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="border-t border-slate-100 p-4">
           <Link
             href={"/create-shipment" as never}
-            className="flex items-center justify-center gap-2 rounded-xl bg-brand-blue px-3 py-2.5 text-sm font-semibold text-white shadow-sm shadow-blue-500/20 hover:bg-blue-600"
+            className="flex items-center justify-center gap-2 rounded-xl bg-brand-yellow px-3 py-2.5 text-sm font-semibold text-brand-navy shadow-sm shadow-yellow-500/20 hover:brightness-95"
           >
             <Package size={16} aria-hidden />
             New shipment
@@ -84,7 +86,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <input
                 aria-label="Search shipments"
                 placeholder="Search tracking #, recipient, invoice…"
-                className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm outline-none ring-brand-blue focus:bg-white focus:ring-2"
+                className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 text-sm outline-none ring-brand-yellow focus:bg-white focus:ring-2"
               />
             </div>
             <Link

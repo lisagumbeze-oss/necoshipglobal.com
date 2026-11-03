@@ -47,7 +47,7 @@ export default function BlogPage() {
               <Badge tone="default" className="w-fit">
                 {post.category}
               </Badge>
-              <Link href={`/blog/${post.slug}`} className="mt-3 font-semibold text-brand-navy hover:text-brand-blue">
+              <Link href={`/blog/${post.slug}`} className="mt-3 font-semibold text-brand-navy hover:text-brand-yellow">
                 {post.title}
               </Link>
               <p className="mt-2 flex-1 text-sm text-slate-600">{post.excerpt}</p>

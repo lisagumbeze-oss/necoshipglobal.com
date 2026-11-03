@@ -18,11 +18,11 @@ export function CookieConsent() {
       <div className="mx-auto flex max-w-7xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <p className="text-sm text-slate-600">
           We use cookies to run the site, measure performance, and improve your experience. See our{" "}
-          <Link href={"/privacy" as never} className="text-brand-blue underline">
+          <Link href={"/privacy" as never} className="text-brand-navy underline">
             Privacy Policy
           </Link>{" "}
           and{" "}
-          <Link href={"/cookies" as never} className="text-brand-blue underline">
+          <Link href={"/cookies" as never} className="text-brand-navy underline">
             Cookie Policy
           </Link>
           .

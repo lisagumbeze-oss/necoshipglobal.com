@@ -53,7 +53,7 @@ export default function AdminCreateShipmentPage() {
       {tracking ? (
         <p className="text-sm">
           Created{" "}
-          <Link href={`/admin/shipments/${tracking}` as never} className="font-mono text-brand-blue underline">
+          <Link href={`/admin/shipments/${tracking}` as never} className="font-mono text-brand-navy underline">
             {tracking}
           </Link>
         </p>

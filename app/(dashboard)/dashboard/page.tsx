@@ -50,18 +50,18 @@ export default function UserDashboardHomePage() {
 
   return (
     <section className="mx-auto max-w-6xl space-y-6">
-      <header className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-navy via-[#123057] to-[#1E6BFF] p-6 text-white shadow-lg shadow-blue-900/10 md:p-8">
+      <header className="overflow-hidden rounded-2xl bg-gradient-to-br from-brand-navy via-[#0A3A6B] to-[#0A3A6B] p-6 text-white shadow-lg shadow-yellow-900/10 md:p-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-xl space-y-2">
-            <p className="text-sm font-medium text-blue-100">{BRAND.name} shipper</p>
+            <p className="text-sm font-medium text-yellow-100">{BRAND.name} shipper</p>
             <h1 className="font-display text-3xl font-bold md:text-4xl">{greeting()}</h1>
-            <p className="text-sm text-blue-100/90">
+            <p className="text-sm text-yellow-100/90">
               Create labels, track deliveries, and manage billing from one place.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Link href={"/create-shipment" as never}>
-              <Button className="bg-white text-brand-navy hover:bg-blue-50">
+              <Button className="bg-white text-brand-navy hover:bg-yellow-50">
                 <PackagePlus size={16} aria-hidden /> Ship now
               </Button>
             </Link>
@@ -110,9 +110,9 @@ export default function UserDashboardHomePage() {
           <Link
             key={action.href}
             href={action.href as never}
-            className="group rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-blue/40 hover:shadow-md"
+            className="group rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-yellow/40 hover:shadow-md"
           >
-            <action.icon size={18} className="text-brand-blue" aria-hidden />
+            <action.icon size={18} className="text-brand-yellow" aria-hidden />
             <p className="mt-3 font-semibold text-brand-navy">{action.label}</p>
             <p className="text-xs text-slate-500">{action.hint}</p>
           </Link>
@@ -123,7 +123,7 @@ export default function UserDashboardHomePage() {
         <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm md:p-5">
           <div className="flex items-center justify-between gap-2">
             <h2 className="font-display text-lg font-semibold text-brand-navy">Your recent shipments</h2>
-            <Link href={"/shipments" as never} className="inline-flex items-center gap-1 text-sm font-semibold text-brand-blue">
+            <Link href={"/shipments" as never} className="inline-flex items-center gap-1 text-sm font-semibold text-brand-navy">
               View all <ArrowRight size={14} aria-hidden />
             </Link>
           </div>
@@ -162,7 +162,7 @@ export default function UserDashboardHomePage() {
                     </td>
                     <td className="py-3 pr-3 text-slate-600">{s.eta}</td>
                     <td className="py-3">
-                      <Link href={`/shipments/${s.id}` as never} className="font-semibold text-brand-blue">
+                      <Link href={`/shipments/${s.id}` as never} className="font-semibold text-brand-navy">
                         Open
                       </Link>
                     </td>
@@ -184,7 +184,7 @@ export default function UserDashboardHomePage() {
           <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
             <div className="flex items-center justify-between">
               <h2 className="font-semibold text-brand-navy">Needs attention</h2>
-              <Link href={"/notifications" as never} className="text-sm font-semibold text-brand-blue">
+              <Link href={"/notifications" as never} className="text-sm font-semibold text-brand-navy">
                 All
               </Link>
             </div>
@@ -216,7 +216,7 @@ export default function UserDashboardHomePage() {
                     <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                     <YAxis tick={{ fontSize: 11 }} width={40} />
                     <Tooltip />
-                    <Bar dataKey="spendUsd" fill="#1E6BFF" radius={[8, 8, 0, 0]} />
+                    <Bar dataKey="spendUsd" fill="#F8E000" radius={[8, 8, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               )}

@@ -116,7 +116,7 @@ export default function ContactPage() {
               <p className="font-semibold text-brand-navy">Email support</p>
               <a
                 href={`mailto:${BRAND.supportEmail}`}
-                className="inline-flex items-center gap-2 font-medium text-brand-blue hover:underline"
+                className="inline-flex items-center gap-2 font-medium text-brand-navy hover:underline"
               >
                 <Mail size={14} aria-hidden />
                 {BRAND.supportEmail}

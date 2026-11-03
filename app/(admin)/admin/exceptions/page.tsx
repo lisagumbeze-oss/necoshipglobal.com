@@ -149,7 +149,7 @@ export default function ExceptionsAlertsPage() {
                       <td className="p-2">{row.region}</td>
                       <td className="p-2">{row.assignee}</td>
                       <td className="p-2">
-                        <Link href={`/admin/shipments/${row.id}` as never} className="text-brand-blue underline">
+                        <Link href={`/admin/shipments/${row.id}` as never} className="text-brand-navy underline">
                           Resolve
                         </Link>
                       </td>

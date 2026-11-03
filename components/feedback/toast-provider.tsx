@@ -28,7 +28,7 @@ function toneClasses(tone: ToastTone) {
   if (tone === "success") return "border-emerald-200 bg-emerald-50 text-emerald-900";
   if (tone === "error") return "border-red-200 bg-red-50 text-red-900";
   if (tone === "warning") return "border-amber-200 bg-amber-50 text-amber-900";
-  return "border-blue-200 bg-blue-50 text-blue-900";
+  return "border-yellow-200 bg-yellow-50 text-brand-navy";
 }
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {

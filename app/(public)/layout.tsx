@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BRAND } from "@/lib/brand";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { LiveChatWidget } from "@/components/public/live-chat-widget";
 import { CookieConsent } from "@/components/public/cookie-consent";
 
@@ -30,10 +31,9 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   return (
     <div className="min-h-screen pb-24 md:pb-8">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <nav className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-4" aria-label="Primary">
-          <Link href={"/" as never} className="flex items-baseline gap-2 font-display text-lg font-bold text-brand-navy">
-            <span>{BRAND.name}</span>
-            <span className="text-xs font-semibold uppercase tracking-wider text-brand-blue">{BRAND.shortName}</span>
+        <nav className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3" aria-label="Primary">
+          <Link href={"/" as never} className="inline-flex items-center" aria-label={BRAND.officialName}>
+            <BrandLogo variant="horizontal" size="sm" priority />
           </Link>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-600">
             {nav.slice(1).map((item) => (
@@ -53,11 +53,10 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       {children}
       <footer className="border-t border-slate-200 bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="font-display text-base font-bold text-brand-navy">{BRAND.name}</p>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">{BRAND.shortName}</p>
+          <div className="space-y-2">
+            <BrandLogo variant="lockup" size="md" />
             <p className="text-sm text-slate-500">{BRAND.tagline}</p>
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="text-sm text-slate-600">
               <a href={`mailto:${BRAND.supportEmail}`} className="hover:text-brand-navy">
                 {BRAND.supportEmail}
               </a>

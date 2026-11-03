@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { BrandLogo } from "@/components/brand/brand-logo";
 import { Badge, Button, Card, Input } from "@/components/design-system/ui";
 import { OTPInput } from "@/components/auth/otp-input";
 import { PasswordStrengthMeter } from "@/components/auth/password-strength";
@@ -28,6 +29,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <main className="space-y-5 p-2">
+      <BrandLogo variant="lockup" size="md" priority />
       <header className="space-y-1">
         <h1 className="font-display text-3xl font-bold text-brand-navy">Forgot Password</h1>
         <p className="text-sm text-slate-600">Recover your {BRAND.name} account with an email OTP.</p>

@@ -44,12 +44,12 @@ export default function ReturnsPage() {
           <div className="rounded-input border border-slate-200 p-3 text-sm">
             <p>
               Return tracking:{" "}
-              <Link href={`/shipments/${result.trackingNumber}` as never} className="font-mono text-brand-blue underline">
+              <Link href={`/shipments/${result.trackingNumber}` as never} className="font-mono text-brand-navy underline">
                 {result.trackingNumber}
               </Link>
             </p>
             {result.labelUrl ? (
-              <a href={result.labelUrl} className="text-brand-blue underline">
+              <a href={result.labelUrl} className="text-brand-navy underline">
                 Download return label
               </a>
             ) : null}

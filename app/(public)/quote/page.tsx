@@ -107,7 +107,7 @@ export default function QuotePage() {
             <div
               key={s}
               role="listitem"
-              className={`rounded-input p-2 text-center text-sm font-medium ${step >= s ? "bg-brand-blue text-white" : "bg-slate-200 text-slate-600"}`}
+              className={`rounded-input p-2 text-center text-sm font-medium ${step >= s ? "bg-brand-yellow text-brand-navy" : "bg-slate-200 text-slate-600"}`}
             >
               Step {s}
             </div>
@@ -269,7 +269,7 @@ export default function QuotePage() {
                   type="button"
                   onClick={() => setSelectedService(option.name)}
                   className={`flex flex-col rounded-card border p-4 text-left ${
-                    selectedService === option.name ? "border-brand-blue bg-blue-50" : "border-slate-200 bg-white"
+                    selectedService === option.name ? "border-brand-yellow bg-yellow-50" : "border-slate-200 bg-white"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2">

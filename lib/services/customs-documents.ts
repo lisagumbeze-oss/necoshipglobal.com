@@ -34,7 +34,7 @@ export function buildCommercialInvoiceHtml(input: CommercialInvoiceInput) {
   <meta charset="utf-8" />
   <title>Commercial Invoice ${input.invoiceNumber}</title>
   <style>
-    body { font-family: Arial, sans-serif; color: #0B1F3A; margin: 32px; font-size: 12px; }
+    body { font-family: Arial, sans-serif; color: #062853; margin: 32px; font-size: 12px; }
     h1 { font-size: 20px; margin: 0 0 4px; }
     .muted { color: #64748B; }
     table { width: 100%; border-collapse: collapse; margin-top: 16px; }

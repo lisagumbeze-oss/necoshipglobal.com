@@ -17,6 +17,10 @@ export const metadata: Metadata = {
   description: BRAND.tagline,
   applicationName: BRAND.name,
   authors: [{ name: BRAND.officialName, url: BRAND.websiteUrl }],
+  icons: {
+    icon: [{ url: BRAND.logos.favicon }, { url: "/brand/favicon-32.png", sizes: "32x32", type: "image/png" }],
+    apple: [{ url: BRAND.logos.appleTouchIcon, sizes: "180x180" }]
+  },
   openGraph: {
     title: BRAND.name,
     description: BRAND.tagline,
