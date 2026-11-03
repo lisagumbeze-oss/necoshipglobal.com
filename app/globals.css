@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-brand-surface text-brand-navy font-body;
+}
+
+.surface-card {
+  @apply rounded-card border border-slate-100 bg-white shadow-layered;
+}
+
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2;
+}
+
+@keyframes route-dash {
+  to {
+    stroke-dashoffset: -400;
+  }
+}
+
+.animate-route-dash {
+  animation: route-dash 18s linear infinite;
+}

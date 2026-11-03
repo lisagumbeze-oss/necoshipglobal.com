@@ -1,0 +1,28 @@
+import Link from "next/link";
+import { Button, Card } from "@/components/design-system/ui";
+
+export default function NotFound() {
+  return (
+    <main className="min-h-screen bg-brand-surface p-4 md:p-8">
+      <section className="mx-auto flex min-h-[80vh] max-w-3xl items-center justify-center">
+        <Card className="w-full space-y-4 text-center">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">404</p>
+          <h1 className="font-display text-3xl font-bold text-brand-navy">Page not found</h1>
+          <p className="text-sm text-slate-600">
+            The route you requested does not exist or may have moved. Use dashboard navigation or return to home.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Link href="/" className="inline-flex">
+              <Button type="button">Go Home</Button>
+            </Link>
+            <Link href="/dashboard" className="inline-flex">
+              <Button variant="secondary" type="button">
+                Open Dashboard
+              </Button>
+            </Link>
+          </div>
+        </Card>
+      </section>
+    </main>
+  );
+}

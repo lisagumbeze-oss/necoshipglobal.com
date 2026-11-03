@@ -1,0 +1,41 @@
+function optional(name: string) {
+  return process.env[name]?.trim() || undefined;
+}
+
+export const env = {
+  databaseUrl: optional("DATABASE_URL"),
+  nextAuthSecret: optional("NEXTAUTH_SECRET") ?? "dev-nextauth-secret",
+  nextAuthUrl: optional("NEXTAUTH_URL") ?? "http://localhost:3000",
+  googleClientId: optional("GOOGLE_CLIENT_ID"),
+  googleClientSecret: optional("GOOGLE_CLIENT_SECRET"),
+  stripeSecretKey: optional("STRIPE_SECRET_KEY"),
+  stripeWebhookSecret: optional("STRIPE_WEBHOOK_SECRET"),
+  stripePublishableKey: optional("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"),
+  shipEngineApiKey: optional("SHIPENGINE_API_KEY"),
+  shipEngineCarrierIds: (optional("SHIPENGINE_CARRIER_IDS") ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean),
+  sanctionsApiUrl: optional("SANCTIONS_API_URL"),
+  sanctionsApiKey: optional("SANCTIONS_API_KEY"),
+  mapboxToken: optional("NEXT_PUBLIC_MAPBOX_TOKEN"),
+  resendApiKey: optional("RESEND_API_KEY"),
+  emailFrom: optional("EMAIL_FROM") ?? "Neco Ship Global <support@necoshipglobal.com>",
+  twilioAccountSid: optional("TWILIO_ACCOUNT_SID"),
+  twilioAuthToken: optional("TWILIO_AUTH_TOKEN"),
+  twilioFromNumber: optional("TWILIO_FROM_NUMBER"),
+  r2Endpoint: optional("R2_ENDPOINT"),
+  r2AccessKeyId: optional("R2_ACCESS_KEY_ID"),
+  r2SecretAccessKey: optional("R2_SECRET_ACCESS_KEY"),
+  r2Bucket: optional("R2_BUCKET") ?? "necoship",
+  r2PublicBaseUrl: optional("R2_PUBLIC_BASE_URL"),
+  pusherAppId: optional("PUSHER_APP_ID"),
+  pusherKey: optional("NEXT_PUBLIC_PUSHER_KEY"),
+  pusherSecret: optional("PUSHER_SECRET"),
+  pusherCluster: optional("NEXT_PUBLIC_PUSHER_CLUSTER") ?? "eu"
+};
+
+export function missingProductionSecrets() {
+  const required = ["DATABASE_URL", "NEXTAUTH_SECRET"] as const;
+  return required.filter((key) => !process.env[key]?.trim());
+}

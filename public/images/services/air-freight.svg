@@ -1,0 +1,14 @@
+<svg width="1200" height="600" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgAir" x1="0" y1="0" x2="1200" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1F3A"/>
+      <stop offset="1" stop-color="#1E6BFF"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="600" fill="url(#bgAir)"/>
+  <path d="M120 420C260 320 420 260 560 240C760 210 920 240 1080 300" stroke="rgba(255,255,255,0.45)" stroke-width="6" stroke-dasharray="10 12"/>
+  <path d="M320 290L790 235L710 285L910 300L710 315L790 365L320 310L240 350L280 300L240 250L320 290Z" fill="rgba(255,255,255,0.9)"/>
+  <circle cx="260" cy="360" r="10" fill="#10B981"/>
+  <circle cx="910" cy="300" r="10" fill="#10B981"/>
+  <text x="72" y="98" fill="white" font-family="Arial, sans-serif" font-size="44" font-weight="700">Express Air Freight</text>
+</svg>

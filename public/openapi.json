@@ -1,0 +1,184 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "NecoShip Global API",
+    "version": "1.0.0",
+    "description": "REST API for quotes, shipments, tracking, recipient delivery options, claims, and webhooks."
+  },
+  "servers": [{ "url": "/", "description": "Current deployment" }],
+  "components": {
+    "securitySchemes": {
+      "sessionCookie": { "type": "apiKey", "in": "cookie", "name": "next-auth.session-token" },
+      "apiKey": { "type": "apiKey", "in": "header", "name": "X-API-Key" }
+    },
+    "schemas": {
+      "ApiOk": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean", "enum": [true] },
+          "data": {}
+        },
+        "required": ["ok", "data"]
+      },
+      "ApiError": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean", "enum": [false] },
+          "error": { "type": "string" },
+          "details": {}
+        },
+        "required": ["ok", "error"]
+      },
+      "QuoteRequest": {
+        "type": "object",
+        "required": ["originCountry", "originCity", "destCountry", "destCity", "weightKg"],
+        "properties": {
+          "originCountry": { "type": "string" },
+          "originCity": { "type": "string" },
+          "destCountry": { "type": "string" },
+          "destCity": { "type": "string" },
+          "weightKg": { "type": "number" },
+          "lengthCm": { "type": "number" },
+          "widthCm": { "type": "number" },
+          "heightCm": { "type": "number" },
+          "declaredValueCents": { "type": "integer" },
+          "commodity": { "type": "string" },
+          "quantity": { "type": "integer" }
+        }
+      },
+      "GuestCheckout": {
+        "type": "object",
+        "required": ["guestEmail", "origin", "destination", "recipientName", "weightKg", "amountCents"],
+        "properties": {
+          "guestEmail": { "type": "string", "format": "email" },
+          "quoteId": { "type": "string" },
+          "origin": { "type": "string" },
+          "destination": { "type": "string" },
+          "recipientName": { "type": "string" },
+          "weightKg": { "type": "number" },
+          "amountCents": { "type": "integer" },
+          "serviceType": { "type": "string" },
+          "completePayment": { "type": "boolean" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/quotes": {
+      "get": {
+        "summary": "List saved quotes",
+        "security": [{ "sessionCookie": [] }],
+        "parameters": [{ "name": "saved", "in": "query", "schema": { "type": "string", "enum": ["1"] } }],
+        "responses": { "200": { "description": "Quote list" } }
+      },
+      "post": {
+        "summary": "Create rate quote",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/QuoteRequest" } } }
+        },
+        "responses": { "200": { "description": "Quote with rates" } }
+      }
+    },
+    "/api/quotes/{quoteId}": {
+      "get": {
+        "summary": "Get quote by id",
+        "parameters": [{ "name": "quoteId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Quote" }, "404": { "description": "Not found" } }
+      },
+      "patch": {
+        "summary": "Save or update quote selection",
+        "security": [{ "sessionCookie": [] }],
+        "parameters": [{ "name": "quoteId", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Updated quote" } }
+      }
+    },
+    "/api/shipments": {
+      "get": {
+        "summary": "List shipments",
+        "security": [{ "sessionCookie": [] }, { "apiKey": [] }],
+        "responses": { "200": { "description": "Shipments" } }
+      },
+      "post": {
+        "summary": "Book shipment and purchase label",
+        "security": [{ "sessionCookie": [] }, { "apiKey": [] }],
+        "responses": { "201": { "description": "Booked shipment" } }
+      }
+    },
+    "/api/shipments/batch": {
+      "post": {
+        "summary": "Batch book shipments",
+        "security": [{ "sessionCookie": [] }],
+        "responses": { "201": { "description": "Batch result" } }
+      }
+    },
+    "/api/checkout/guest": {
+      "post": {
+        "summary": "Guest pay-before-account booking",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/GuestCheckout" } } }
+        },
+        "responses": { "201": { "description": "Booked" }, "200": { "description": "Requires payment" } }
+      }
+    },
+    "/api/tracking": {
+      "get": {
+        "summary": "Public multi-track lookup",
+        "parameters": [{ "name": "ids", "in": "query", "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Tracking payloads" } }
+      }
+    },
+    "/api/recipient/{token}": {
+      "get": {
+        "summary": "Recipient portal shipment",
+        "parameters": [{ "name": "token", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Shipment" } }
+      },
+      "patch": {
+        "summary": "Update delivery preferences / appointment / redirect",
+        "parameters": [{ "name": "token", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Updated" } }
+      }
+    },
+    "/api/claims": {
+      "get": { "summary": "List claims", "responses": { "200": { "description": "Claims" } } },
+      "post": { "summary": "File claim", "responses": { "201": { "description": "Claim" } } }
+    },
+    "/api/returns": {
+      "post": { "summary": "Create return label", "responses": { "201": { "description": "Return shipment" } } }
+    },
+    "/api/pod": {
+      "post": { "summary": "Capture proof of delivery", "responses": { "201": { "description": "POD" } } }
+    },
+    "/api/webhooks/carriers": {
+      "post": { "summary": "Carrier status webhook", "responses": { "200": { "description": "Accepted" } } }
+    },
+    "/api/recurring": {
+      "get": { "summary": "List recurring schedules", "responses": { "200": { "description": "Schedules" } } },
+      "post": { "summary": "Create recurring schedule", "responses": { "201": { "description": "Schedule" } } }
+    },
+    "/api/compliance/export": {
+      "post": { "summary": "Export account data (GDPR)", "responses": { "200": { "description": "Export JSON" } } }
+    },
+    "/api/compliance/delete": {
+      "post": {
+        "summary": "Purge account data (GDPR)",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "confirm": { "type": "string", "enum": ["DELETE"] },
+                  "immediate": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "Purge summary" } }
+      }
+    }
+  }
+}

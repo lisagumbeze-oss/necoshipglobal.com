@@ -1,0 +1,14 @@
+/** Official company & product identity. */
+export const BRAND = {
+  /** Product / UI display name */
+  name: "NecoShip Global",
+  /** Legal / official company name */
+  officialName: "Neco Ship Global",
+  /** Short mark */
+  shortName: "NECO",
+  tagline: "Delivered Faster. Tracked Smarter. Trusted Worldwide.",
+  websiteHost: "www.necoshipglobal.com",
+  websiteUrl: "https://www.necoshipglobal.com",
+  supportEmail: "support@necoshipglobal.com",
+  domain: "necoshipglobal.com"
+} as const;

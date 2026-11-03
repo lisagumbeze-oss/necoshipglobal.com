@@ -1,0 +1,16 @@
+<svg width="1200" height="600" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgSea" x1="0" y1="0" x2="1200" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0D1117"/>
+      <stop offset="1" stop-color="#0B1F3A"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="600" fill="url(#bgSea)"/>
+  <path d="M0 420C140 390 280 450 420 420C560 390 700 450 840 420C980 390 1120 450 1200 430V600H0V420Z" fill="#1E6BFF" fill-opacity="0.35"/>
+  <path d="M200 330H860L810 390H250L200 330Z" fill="rgba(255,255,255,0.9)"/>
+  <rect x="280" y="270" width="120" height="60" rx="8" fill="#F59E0B"/>
+  <rect x="410" y="270" width="120" height="60" rx="8" fill="#10B981"/>
+  <rect x="540" y="270" width="120" height="60" rx="8" fill="#EF4444"/>
+  <rect x="670" y="270" width="120" height="60" rx="8" fill="#4A5568"/>
+  <text x="72" y="98" fill="white" font-family="Arial, sans-serif" font-size="44" font-weight="700">Ocean Freight</text>
+</svg>

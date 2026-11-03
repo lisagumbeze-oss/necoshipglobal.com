@@ -1,0 +1,16 @@
+<svg width="1200" height="600" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgCustoms" x1="0" y1="0" x2="1200" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0B1F3A"/>
+      <stop offset="1" stop-color="#334155"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="600" fill="url(#bgCustoms)"/>
+  <rect x="210" y="130" width="780" height="360" rx="20" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+  <rect x="270" y="190" width="330" height="26" rx="8" fill="rgba(255,255,255,0.85)"/>
+  <rect x="270" y="240" width="500" height="18" rx="8" fill="rgba(255,255,255,0.6)"/>
+  <rect x="270" y="274" width="420" height="18" rx="8" fill="rgba(255,255,255,0.45)"/>
+  <path d="M840 210L895 242V306C895 350 865 391 840 404C815 391 785 350 785 306V242L840 210Z" fill="#10B981"/>
+  <path d="M814 305L834 325L868 288" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="72" y="98" fill="white" font-family="Arial, sans-serif" font-size="44" font-weight="700">Customs &amp; Compliance</text>
+</svg>
