@@ -8,7 +8,8 @@ export async function publishEvent(channel: string, event: string, data: unknown
   }
 
   try {
-    const mod = await import("pusher" as string).catch(() => null);
+    // Optional SDK — ignore at bundle time when the package is not installed.
+    const mod = await import(/* webpackIgnore: true */ "pusher" as string).catch(() => null);
     if (!mod) {
       logger.info("realtime.pusher_sdk_missing", { channel, event });
       return { provider: "dev" as const };

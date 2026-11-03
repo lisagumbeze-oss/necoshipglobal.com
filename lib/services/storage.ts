@@ -23,7 +23,8 @@ export async function storeObject(input: {
   if (env.r2Endpoint && env.r2AccessKeyId && env.r2SecretAccessKey) {
     try {
       // Optional dependency: only used when R2 credentials are configured.
-      const aws = await import("@aws-sdk/client-s3" as string).catch(() => null);
+      // Optional SDK — ignore at bundle time when the package is not installed.
+      const aws = await import(/* webpackIgnore: true */ "@aws-sdk/client-s3" as string).catch(() => null);
       if (aws) {
         const client = new aws.S3Client({
           region: "auto",
