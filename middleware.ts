@@ -10,10 +10,18 @@ import {
   isUserAppPathname
 } from "@/lib/auth-routes";
 
+const INSECURE_DEV_SECRET = "dev-nextauth-secret";
+
 async function roleFromRequest(request: NextRequest): Promise<AppRole> {
+  const secret = process.env.NEXTAUTH_SECRET?.trim();
+  if (process.env.NODE_ENV === "production") {
+    if (!secret || secret === INSECURE_DEV_SECRET || secret.length < 32) {
+      return "guest";
+    }
+  }
   const token = await getToken({
     req: request,
-    secret: process.env.NEXTAUTH_SECRET ?? "dev-nextauth-secret"
+    secret: secret || INSECURE_DEV_SECRET
   });
   if (token?.role === "admin") return "admin";
   if (token?.role === "customer") return "customer";

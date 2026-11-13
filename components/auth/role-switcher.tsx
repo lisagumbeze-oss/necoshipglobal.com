@@ -12,10 +12,17 @@ const OPTIONS: { value: AppRole; label: string }[] = [
 
 type Props = { variant?: "light" | "dark" };
 
+/**
+ * Development-only helper. Never rendered in production builds.
+ */
 export function RoleSwitcher({ variant = "light" }: Props) {
   const router = useRouter();
   const { data: session, status } = useSession();
   const role: AppRole = status === "authenticated" ? session.user.role : "guest";
+
+  if (process.env.NODE_ENV === "production") {
+    return null;
+  }
 
   const onChange = async (next: AppRole) => {
     if (next === "guest") {
@@ -24,12 +31,19 @@ export function RoleSwitcher({ variant = "light" }: Props) {
       return;
     }
 
-    // Demo-only role switching using credentials provider.
+    // Local development only — requires accounts created via db:seed / provision-admin.
+    const email = process.env.NEXT_PUBLIC_DEV_ADMIN_EMAIL || process.env.NEXT_PUBLIC_DEV_CUSTOMER_EMAIL;
+    if (!email && next === "admin") {
+      console.warn("Set NEXT_PUBLIC_DEV_ADMIN_EMAIL for local role switching");
+      return;
+    }
     await signIn("credentials", {
       redirect: false,
-      email: next === "admin" ? "admin@necoship.global" : "customer@necoship.global",
-      password: "demo-password",
-      role: next
+      email:
+        next === "admin"
+          ? process.env.NEXT_PUBLIC_DEV_ADMIN_EMAIL || "admin@localhost"
+          : process.env.NEXT_PUBLIC_DEV_CUSTOMER_EMAIL || "customer@localhost",
+      password: process.env.NEXT_PUBLIC_DEV_LOGIN_PASSWORD || ""
     });
     router.refresh();
   };
@@ -43,10 +57,10 @@ export function RoleSwitcher({ variant = "light" }: Props) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       <span className={`text-xs font-medium ${labelClass}`} id="role-switcher-label">
-        Mock role
+        Dev role
       </span>
       <label htmlFor="mock-role" className="sr-only">
-        Select demo account role
+        Select development account role
       </label>
       <select
         id="mock-role"

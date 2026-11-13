@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { jsonError, jsonOk, requireSession } from "@/lib/api";
+import { jsonError, jsonOk, requireSessionOrApiKey } from "@/lib/api";
 import { ensureUserDemoData } from "@/lib/repository/ensure-demo";
 import { bookShipment, listShipments } from "@/lib/repository/shipments";
 import { createPaymentIntent, confirmDevPayment } from "@/lib/services/payments";
@@ -39,7 +39,7 @@ const bookSchema = z.object({
 });
 
 export async function GET(request: Request) {
-  const { session, error } = await requireSession();
+  const { session, error } = await requireSessionOrApiKey(request);
   if (error || !session?.user.id) return error!;
   ensureUserDemoData(session.user.id);
   const { searchParams } = new URL(request.url);
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const { session, error } = await requireSession();
+  const { session, error } = await requireSessionOrApiKey(request);
   if (error || !session?.user.id) return error!;
 
   const body = await request.json().catch(() => null);

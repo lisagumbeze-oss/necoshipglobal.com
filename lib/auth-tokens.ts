@@ -1,10 +1,29 @@
+import { randomInt, randomBytes } from "crypto";
 import { memoryStore } from "@/lib/repository/memory-store";
-import { isDatabaseConfigured, prisma } from "@/lib/db";
+import {
+  DatabaseUnavailableError,
+  isDatabaseConfigured,
+  mustUseDatabase,
+  prisma
+} from "@/lib/db";
+import { allowMemoryStore } from "@/lib/runtime";
+
+const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
 function randomToken(length = 32) {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = randomBytes(length);
   let out = "";
-  for (let i = 0; i < length; i += 1) out += alphabet[Math.floor(Math.random() * alphabet.length)];
+  for (let i = 0; i < length; i += 1) {
+    out += ALPHABET[bytes[i]! % ALPHABET.length];
+  }
+  return out;
+}
+
+function randomOtp(length = 6) {
+  let out = "";
+  for (let i = 0; i < length; i += 1) {
+    out += String(randomInt(0, 10));
+  }
   return out;
 }
 
@@ -15,7 +34,10 @@ export async function createVerificationToken(input: {
   ttlMinutes?: number;
   tokenLength?: number;
 }) {
-  const token = input.type === "otp" ? randomToken(input.tokenLength ?? 6) : randomToken(input.tokenLength ?? 32);
+  const token =
+    input.type === "otp" || (input.tokenLength ?? 32) <= 8
+      ? randomOtp(input.tokenLength ?? 6)
+      : randomToken(input.tokenLength ?? 32);
   const expires = new Date(Date.now() + 1000 * 60 * (input.ttlMinutes ?? 30));
 
   if (isDatabaseConfigured()) {
@@ -30,9 +52,18 @@ export async function createVerificationToken(input: {
         }
       });
       return { token, expires };
-    } catch {
-      // fall through
+    } catch (error) {
+      if (mustUseDatabase()) {
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new DatabaseUnavailableError(`Token create failed: ${detail}`);
+      }
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required for verification tokens");
+  }
+
+  if (!allowMemoryStore()) {
+    throw new DatabaseUnavailableError("Memory token store is disabled");
   }
 
   memoryStore.verificationTokens = memoryStore.verificationTokens.filter(
@@ -62,10 +93,20 @@ export async function consumeVerificationToken(input: {
       if (!row || row.expires < new Date()) return null;
       await prisma.verificationToken.delete({ where: { id: row.id } });
       return row;
-    } catch {
-      // fall through
+    } catch (error) {
+      if (mustUseDatabase()) {
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new DatabaseUnavailableError(`Token consume failed: ${detail}`);
+      }
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required for verification tokens");
   }
+
+  if (!allowMemoryStore()) {
+    throw new DatabaseUnavailableError("Memory token store is disabled");
+  }
+
   const idx = memoryStore.verificationTokens.findIndex(
     (t) => t.identifier === identifier && t.token === input.token && t.type === input.type
   );

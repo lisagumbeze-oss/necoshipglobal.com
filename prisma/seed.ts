@@ -1,39 +1,75 @@
 import { PrismaClient } from "@prisma/client";
-import { hashPassword } from "../lib/password";
+import { hashPassword, isStrongPassword } from "../lib/password";
 
 const prisma = new PrismaClient();
 
+/**
+ * Explicit seed only — never runs automatically at app boot.
+ *
+ * Required for admin creation:
+ *   SEED_ADMIN_EMAIL
+ *   SEED_ADMIN_PASSWORD  (strong password; defaults from legacy demos are rejected)
+ *
+ * Optional demo customer (non-production only):
+ *   SEED_DEMO_EMAIL
+ *   SEED_DEMO_PASSWORD
+ */
 async function main() {
-  const adminHash = await hashPassword("Admin123!");
-  const demoHash = await hashPassword("Demo1234!");
+  const adminEmail = process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase();
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD?.trim();
 
-  const admin = await prisma.user.upsert({
-    where: { email: "admin@necoship.global" },
-    update: {},
-    create: {
-      email: "admin@necoship.global",
-      name: "NecoShip Admin",
-      passwordHash: adminHash,
-      role: "ADMIN",
-      accountType: "ENTERPRISE",
-      emailVerifiedAt: new Date()
+  if (adminEmail && adminPassword) {
+    if (!isStrongPassword(adminPassword)) {
+      throw new Error("SEED_ADMIN_PASSWORD must be strong (8+ chars, upper, lower, digit)");
     }
-  });
+    const blocked = new Set(["Admin123!", "Demo1234!", "demo-password", "password", "Password1"]);
+    if (blocked.has(adminPassword)) {
+      throw new Error("SEED_ADMIN_PASSWORD rejects known default/demo passwords — choose a unique secret");
+    }
+    const adminHash = await hashPassword(adminPassword);
+    const admin = await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: {
+        passwordHash: adminHash,
+        role: "ADMIN",
+        emailVerifiedAt: new Date()
+      },
+      create: {
+        email: adminEmail,
+        name: process.env.SEED_ADMIN_NAME?.trim() || "NecoShip Administrator",
+        passwordHash: adminHash,
+        role: "ADMIN",
+        accountType: "ENTERPRISE",
+        emailVerifiedAt: new Date()
+      }
+    });
+    console.log("Provisioned administrator", admin.email);
+  } else {
+    console.log("Skipping admin user seed (set SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD to provision)");
+  }
 
-  const demo = await prisma.user.upsert({
-    where: { email: "demo@necoship.global" },
-    update: {},
-    create: {
-      email: "demo@necoship.global",
-      name: "Demo Shipper",
-      companyName: "Demo Logistics LLC",
-      passwordHash: demoHash,
-      role: "CUSTOMER",
-      accountType: "BUSINESS",
-      emailVerifiedAt: new Date(),
-      walletBalanceCents: 25000
+  if (process.env.NODE_ENV !== "production") {
+    const demoEmail = process.env.SEED_DEMO_EMAIL?.trim().toLowerCase();
+    const demoPassword = process.env.SEED_DEMO_PASSWORD?.trim();
+    if (demoEmail && demoPassword && isStrongPassword(demoPassword)) {
+      const demoHash = await hashPassword(demoPassword);
+      await prisma.user.upsert({
+        where: { email: demoEmail },
+        update: {},
+        create: {
+          email: demoEmail,
+          name: "Demo Shipper",
+          companyName: "Demo Logistics LLC",
+          passwordHash: demoHash,
+          role: "CUSTOMER",
+          accountType: "BUSINESS",
+          emailVerifiedAt: new Date(),
+          walletBalanceCents: 0
+        }
+      });
+      console.log("Provisioned demo customer", demoEmail);
     }
-  });
+  }
 
   await prisma.rateCard.createMany({
     data: [
@@ -75,17 +111,6 @@ async function main() {
     }
   });
 
-  await prisma.carrierIntegration.createMany({
-    data: [
-      { carrier: "FedEx", status: "HEALTHY", latencyMs: 120 },
-      { carrier: "UPS", status: "HEALTHY", latencyMs: 140 },
-      { carrier: "DHL", status: "DEGRADED", latencyMs: 820 },
-      { carrier: "USPS", status: "HEALTHY", latencyMs: 95 },
-      { carrier: "ShipEngine", status: "HEALTHY", latencyMs: 110 }
-    ],
-    skipDuplicates: true
-  });
-
   await prisma.warehouseLocation.upsert({
     where: { code: "LAX-01" },
     update: {},
@@ -99,7 +124,7 @@ async function main() {
     }
   });
 
-  console.log("Seeded users", { admin: admin.email, demo: demo.email });
+  console.log("Seed complete (rate cards, promo, sample warehouse). No default passwords were written.");
 }
 
 main()

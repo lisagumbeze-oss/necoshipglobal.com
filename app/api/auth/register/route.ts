@@ -5,6 +5,10 @@ import { sendEmail } from "@/lib/services/email";
 import { isStrongPassword } from "@/lib/password";
 import { jsonError, jsonOk } from "@/lib/api";
 import { writeAuditLog } from "@/lib/services/audit";
+import { allowDevSecretLeakage, isProductionRuntime } from "@/lib/runtime";
+import { DatabaseUnavailableError } from "@/lib/db";
+import { env } from "@/lib/env";
+import { rateLimit } from "@/lib/rate-limit";
 
 const schema = z.object({
   email: z.string().email(),
@@ -22,6 +26,19 @@ export async function POST(request: Request) {
   if (!parsed.success) return jsonError("Invalid registration payload", 400, parsed.error.flatten());
   if (!isStrongPassword(parsed.data.password)) {
     return jsonError("Password must include upper, lower, and a number (min 8 chars)", 400);
+  }
+
+  const rl = rateLimit({
+    key: `register:${parsed.data.email.toLowerCase()}`,
+    limit: 5,
+    windowMs: 15 * 60 * 1000
+  });
+  if (!rl.allowed) {
+    return jsonError("Too many registration attempts. Try again later.", 429);
+  }
+
+  if (isProductionRuntime() && !env.resendApiKey) {
+    return jsonError("Email verification is unavailable. Contact support.", 503);
   }
 
   try {
@@ -43,10 +60,12 @@ export async function POST(request: Request) {
       userId: user.id,
       email: user.email,
       verificationRequired: true,
-      // Returned only in non-production / when Resend is unset for local demo UX
-      devVerificationCode: process.env.RESEND_API_KEY ? undefined : token
+      ...(allowDevSecretLeakage() ? { devVerificationCode: token } : {})
     });
   } catch (error) {
+    if (error instanceof DatabaseUnavailableError) {
+      return jsonError("Service temporarily unavailable", 503);
+    }
     return jsonError(error instanceof Error ? error.message : "Registration failed", 400);
   }
 }
