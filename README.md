@@ -4,11 +4,11 @@
 
 Brand: navy `#062853` + canary yellow `#F8E000` · logo assets in `public/brand/`.
 
-Production-oriented Next.js 14 shipping & tracking platform (marketing site, shipper dashboard, admin ops).
+Next.js 14 shipping & tracking platform (marketing site, shipper dashboard, admin ops).
 
 ## Stack
 - Next.js 14 App Router + TypeScript + Tailwind
-- Prisma + PostgreSQL (memory fallback when `DATABASE_URL` is unset)
+- Prisma + PostgreSQL (memory store only for local demos without `DATABASE_URL`; **never** in production)
 - NextAuth (credentials, Google, email verify, TOTP 2FA)
 - Stripe, ShipEngine, Mapbox, Resend, Twilio, R2/S3, Pusher adapters
 
@@ -16,26 +16,38 @@ Production-oriented Next.js 14 shipping & tracking platform (marketing site, shi
 ```bash
 npm install
 cp .env.example .env.local
+# Set NEXTAUTH_SECRET to a long random value (32+ chars)
 npm run db:generate
-# optional when Postgres is available:
-# npm run db:push && npm run db:seed
+# When Postgres is available:
+# npm run db:push
+# SEED_ADMIN_EMAIL=you@necoshipglobal.com SEED_ADMIN_PASSWORD='StrongPass1' npm run db:seed
 npm run dev
 ```
 
-Demo accounts (memory mode seeds on boot):
-- `demo@necoship.global` / `Demo1234!`
-- `admin@necoship.global` / `Admin123!`
+### Administrator provisioning
+Default admin/demo accounts are **not** auto-created at runtime.
+
+```bash
+npx tsx scripts/provision-admin.ts --email you@necoshipglobal.com --password 'StrongUniquePass1'
+```
+
+See [docs/runbooks/security-operations.md](docs/runbooks/security-operations.md).
 
 ## Key API surfaces
 - `POST /api/auth/register` · `POST /api/auth/verify-email` · password reset · 2FA setup
 - `POST /api/quotes` · `GET/POST /api/shipments` · `GET /api/tracking`
 - `POST /api/billing/checkout` · `POST /api/webhooks/stripe` · `POST /api/webhooks/carriers`
-- Dashboard: addresses, tickets, notifications, documents, invoices, API keys
-- Admin: pickups, warehouse, carriers, promotions, refunds, SLA, impersonation
+- Admin: pickups, warehouse, fleet, finance, dispatch
 - Expansion: recipient portal, claims, returns, batch, templates, org, POD, compliance
 
 ## Scripts
 - `npm run dev` — local app
 - `npm run build` — prisma generate + next build
 - `npm run db:push` — push Prisma schema
-- `npm run db:seed` — seed admin/demo + rate cards
+- `npm run db:seed` — seed rate cards / warehouse; admin only when `SEED_ADMIN_*` set
+- `npm run test:security` — security guard smoke tests
+- `npm run provision:admin` — one-shot admin user provisioning
+
+## Production notes
+- `DATABASE_URL` and a strong `NEXTAUTH_SECRET` are required (startup fails closed).
+- Rotate `NEXTAUTH_SECRET` to invalidate sessions after any credential incident.

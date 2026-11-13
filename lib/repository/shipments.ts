@@ -1,4 +1,10 @@
-import { isDatabaseConfigured, prisma } from "@/lib/db";
+import {
+  DatabaseUnavailableError,
+  isDatabaseConfigured,
+  mustUseDatabase,
+  prisma
+} from "@/lib/db";
+import { allowMemoryStore } from "@/lib/runtime";
 import { memoryStore, type MemoryShipment, type MemoryTrackingEvent } from "@/lib/repository/memory-store";
 import {
   generateRecipientToken,
@@ -37,9 +43,17 @@ export async function listShipments(filter?: { userId?: string; status?: string;
         orderBy: { createdAt: "desc" },
         include: { events: { orderBy: { occurredAt: "desc" }, take: 5 } }
       });
-    } catch {
-      // fall through
+    } catch (error) {
+      if (mustUseDatabase()) {
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new DatabaseUnavailableError(`listShipments failed: ${detail}`);
+      }
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required for shipments");
+  }
+  if (!allowMemoryStore()) {
+    throw new DatabaseUnavailableError("Memory shipment store is disabled");
   }
   return memoryStore.shipments
     .filter((s) => (filter?.userId ? s.userId === filter.userId : true))
@@ -68,9 +82,17 @@ export async function getShipmentByTracking(trackingNumber: string) {
           exceptions: true
         }
       });
-    } catch {
-      // fall through
+    } catch (error) {
+      if (mustUseDatabase()) {
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new DatabaseUnavailableError(`getShipmentByTracking failed: ${detail}`);
+      }
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required for tracking");
+  }
+  if (!allowMemoryStore()) {
+    throw new DatabaseUnavailableError("Memory shipment store is disabled");
   }
   const shipment = memoryStore.shipments.find((s) => s.trackingNumber.toUpperCase() === id);
   if (!shipment) return null;
@@ -88,9 +110,17 @@ export async function getShipmentByRecipientToken(token: string) {
         where: { recipientToken: token },
         include: { events: { orderBy: { occurredAt: "asc" } }, proofOfDelivery: true }
       });
-    } catch {
-      // fall through
+    } catch (error) {
+      if (mustUseDatabase()) {
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new DatabaseUnavailableError(`getShipmentByRecipientToken failed: ${detail}`);
+      }
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required for recipient portal");
+  }
+  if (!allowMemoryStore()) {
+    throw new DatabaseUnavailableError("Memory shipment store is disabled");
   }
   const shipment = memoryStore.shipments.find((s) => s.recipientToken === token);
   if (!shipment) return null;
@@ -317,33 +347,36 @@ export async function bookShipment(input: {
     updatedAt: now
   };
 
-  memoryStore.shipments.unshift(shipment);
-  const event: MemoryTrackingEvent = {
-    id: `evt_${Date.now()}`,
-    shipmentId: shipment.id,
-    status: "LABEL_CREATED",
-    code: "LABEL",
-    description:
-      label.provider === "shipengine"
-        ? "Carrier shipping label purchased"
-        : "Shipping label created (local adapter)",
-    location: input.origin,
-    lat: null,
-    lng: null,
-    occurredAt: now
-  };
-  memoryStore.events.push(event);
-  const labelFilename =
-    stored.mimeType === "application/pdf" ? `${trackingNumber}.pdf` : `${trackingNumber}.zpl`;
-  memoryStore.documents.push({
-    id: `doc_${Date.now()}`,
-    userId: input.userId ?? null,
-    shipmentId: shipment.id,
-    type: "SHIPPING_LABEL",
-    filename: labelFilename,
-    url: stored.url,
-    createdAt: now
-  });
+  const useMemory = allowMemoryStore();
+  if (useMemory) {
+    memoryStore.shipments.unshift(shipment);
+    const event: MemoryTrackingEvent = {
+      id: `evt_${Date.now()}`,
+      shipmentId: shipment.id,
+      status: "LABEL_CREATED",
+      code: "LABEL",
+      description:
+        label.provider === "shipengine"
+          ? "Carrier shipping label purchased"
+          : "Shipping label created (local adapter)",
+      location: input.origin,
+      lat: null,
+      lng: null,
+      occurredAt: now
+    };
+    memoryStore.events.push(event);
+    const labelFilename =
+      stored.mimeType === "application/pdf" ? `${trackingNumber}.pdf` : `${trackingNumber}.zpl`;
+    memoryStore.documents.push({
+      id: `doc_${Date.now()}`,
+      userId: input.userId ?? null,
+      shipmentId: shipment.id,
+      type: "SHIPPING_LABEL",
+      filename: labelFilename,
+      url: stored.url,
+      createdAt: now
+    });
+  }
 
   const intl = shipFrom.country.toUpperCase() !== shipTo.country.toUpperCase();
   if (intl) {
@@ -364,27 +397,29 @@ export async function bookShipment(input: {
       originCountry: shipFrom.country,
       destCountry: shipTo.country
     });
-    memoryStore.documents.push({
-      id: `doc_ci_${Date.now()}`,
-      userId: input.userId ?? null,
-      shipmentId: shipment.id,
-      type: "COMMERCIAL_INVOICE",
-      filename: invoice.filename,
-      url: invoice.url,
-      createdAt: now
-    });
-    const checklist = defaultDocsChecklist(true);
-    memoryStore.customs.push({
-      id: `cus_${Date.now()}`,
-      shipmentId: shipment.id,
-      trackingNumber,
-      status: "DOCS_PENDING",
-      broker: "NecoShip Brokerage",
-      brokerNotes: null,
-      missingDocs: checklist.required.filter((d) => !checklist.received.includes(d)),
-      docsChecklist: checklist,
-      updatedAt: now
-    });
+    if (useMemory) {
+      memoryStore.documents.push({
+        id: `doc_ci_${Date.now()}`,
+        userId: input.userId ?? null,
+        shipmentId: shipment.id,
+        type: "COMMERCIAL_INVOICE",
+        filename: invoice.filename,
+        url: invoice.url,
+        createdAt: now
+      });
+      const checklist = defaultDocsChecklist(true);
+      memoryStore.customs.push({
+        id: `cus_${Date.now()}`,
+        shipmentId: shipment.id,
+        trackingNumber,
+        status: "DOCS_PENDING",
+        broker: "NecoShip Brokerage",
+        brokerNotes: null,
+        missingDocs: checklist.required.filter((d) => !checklist.received.includes(d)),
+        docsChecklist: checklist,
+        updatedAt: now
+      });
+    }
   }
 
   if (input.quoteId) {
@@ -401,16 +436,18 @@ export async function bookShipment(input: {
       windowEnd: new Date(input.schedulePickupWindow.end),
       carrierShipmentId: label.carrierShipmentId
     });
-    memoryStore.pickups.push({
-      id: `pkp_${Date.now()}`,
-      shipmentId: shipment.id,
-      trackingNumber,
-      scheduledStart: input.schedulePickupWindow.start,
-      scheduledEnd: input.schedulePickupWindow.end,
-      status: pickup.status,
-      carrierPickupId: pickup.carrierPickupId,
-      provider: pickup.provider
-    });
+    if (useMemory) {
+      memoryStore.pickups.push({
+        id: `pkp_${Date.now()}`,
+        shipmentId: shipment.id,
+        trackingNumber,
+        scheduledStart: input.schedulePickupWindow.start,
+        scheduledEnd: input.schedulePickupWindow.end,
+        status: pickup.status,
+        carrierPickupId: pickup.carrierPickupId,
+        provider: pickup.provider
+      });
+    }
   }
 
   if (isDatabaseConfigured()) {
@@ -458,9 +495,14 @@ export async function bookShipment(input: {
           }
         }
       });
-    } catch {
-      // memory already holds the shipment for local/demo
+    } catch (error) {
+      if (mustUseDatabase()) {
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new DatabaseUnavailableError(`bookShipment persist failed: ${detail}`);
+      }
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required to book shipments");
   }
 
   await publishEvent(trackingChannel(trackingNumber), "status", {
@@ -494,32 +536,28 @@ export async function addTrackingEvent(input: {
   location?: string;
   lat?: number;
   lng?: number;
+  idempotencyKey?: string;
 }) {
   const shipment = await getShipmentByTracking(input.trackingNumber);
   if (!shipment) throw new Error("Shipment not found");
   const now = new Date().toISOString();
-  const event: MemoryTrackingEvent = {
-    id: `evt_${Date.now()}`,
-    shipmentId: shipment.id,
-    status: input.status ?? null,
-    code: input.status ?? "UPDATE",
-    description: input.description,
-    location: input.location ?? null,
-    lat: input.lat ?? null,
-    lng: input.lng ?? null,
-    occurredAt: now
-  };
-  memoryStore.events.push(event);
-  const mem = memoryStore.shipments.find((s) => s.id === shipment.id);
-  if (mem && input.status) {
-    mem.status = input.status;
-    mem.updatedAt = now;
-    if (input.status === "DELIVERED") mem.deliveredAt = now;
-    if (input.status === "PICKED_UP") mem.pickedUpAt = now;
-  }
+  const idempotencyKey =
+    input.idempotencyKey ?? `${shipment.id}|${input.status ?? ""}|${input.description}|${now.slice(0, 16)}`;
+
   if (isDatabaseConfigured()) {
     try {
-      await prisma.trackingEvent.create({
+      const existing = await prisma.trackingEvent.findFirst({
+        where: {
+          shipmentId: shipment.id,
+          description: input.description,
+          code: input.status ?? undefined,
+          occurredAt: { gte: new Date(Date.now() - 60_000) }
+        }
+      });
+      if (existing && existing.description === input.description) {
+        return existing;
+      }
+      const created = await prisma.trackingEvent.create({
         data: {
           shipmentId: shipment.id,
           status: input.status as never,
@@ -527,7 +565,8 @@ export async function addTrackingEvent(input: {
           description: input.description,
           location: input.location,
           lat: input.lat,
-          lng: input.lng
+          lng: input.lng,
+          rawJson: { idempotencyKey } as never
         }
       });
       if (input.status) {
@@ -540,9 +579,53 @@ export async function addTrackingEvent(input: {
           }
         });
       }
-    } catch {
-      // memory path already updated
+      await publishEvent(trackingChannel(input.trackingNumber), "status", {
+        trackingNumber: input.trackingNumber,
+        status: input.status,
+        description: input.description
+      });
+      return created;
+    } catch (error) {
+      if (mustUseDatabase()) {
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new DatabaseUnavailableError(`addTrackingEvent failed: ${detail}`);
+      }
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required for tracking events");
+  }
+
+  if (!allowMemoryStore()) {
+    throw new DatabaseUnavailableError("Memory tracking store is disabled");
+  }
+
+  const duplicate = memoryStore.events.find(
+    (e) =>
+      e.shipmentId === shipment.id &&
+      e.description === input.description &&
+      String((e as { idempotencyKey?: string }).idempotencyKey ?? "") === idempotencyKey
+  );
+  if (duplicate) return duplicate;
+
+  const event: MemoryTrackingEvent & { idempotencyKey?: string } = {
+    id: `evt_${Date.now()}`,
+    shipmentId: shipment.id,
+    status: input.status ?? null,
+    code: input.status ?? "UPDATE",
+    description: input.description,
+    location: input.location ?? null,
+    lat: input.lat ?? null,
+    lng: input.lng ?? null,
+    occurredAt: now,
+    idempotencyKey
+  };
+  memoryStore.events.push(event);
+  const mem = memoryStore.shipments.find((s) => s.id === shipment.id);
+  if (mem && input.status) {
+    mem.status = input.status;
+    mem.updatedAt = now;
+    if (input.status === "DELIVERED") mem.deliveredAt = now;
+    if (input.status === "PICKED_UP") mem.pickedUpAt = now;
   }
   await publishEvent(trackingChannel(input.trackingNumber), "status", {
     trackingNumber: input.trackingNumber,

@@ -1,4 +1,11 @@
-import { isDatabaseConfigured, prisma } from "@/lib/db";
+import {
+  DatabaseUnavailableError,
+  isDatabaseConfigured,
+  mustUseDatabase,
+  prisma
+} from "@/lib/db";
+import { allowMemoryStore } from "@/lib/runtime";
+import { isAdminConsoleRole } from "@/lib/rbac";
 import { memoryStore, type MemoryUser } from "@/lib/repository/memory-store";
 import { hashPassword, verifyPassword } from "@/lib/password";
 
@@ -16,14 +23,28 @@ function toMemoryRole(role: string): MemoryUser["role"] {
   return (allowed.includes(role as MemoryUser["role"]) ? role : "CUSTOMER") as MemoryUser["role"];
 }
 
+function rethrowIfDbRequired(error: unknown): never {
+  if (mustUseDatabase()) {
+    if (error instanceof DatabaseUnavailableError) throw error;
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new DatabaseUnavailableError(`User repository database failure: ${detail}`);
+  }
+  throw error;
+}
+
 export async function findUserByEmail(email: string) {
   const normalized = email.trim().toLowerCase();
   if (isDatabaseConfigured()) {
     try {
       return await prisma.user.findUnique({ where: { email: normalized } });
-    } catch {
-      // fall through to memory
+    } catch (error) {
+      if (mustUseDatabase()) rethrowIfDbRequired(error);
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required to look up users");
+  }
+  if (!allowMemoryStore()) {
+    throw new DatabaseUnavailableError("Memory user store is disabled");
   }
   return memoryStore.users.find((u) => u.email === normalized) ?? null;
 }
@@ -32,9 +53,14 @@ export async function findUserById(id: string) {
   if (isDatabaseConfigured()) {
     try {
       return await prisma.user.findUnique({ where: { id } });
-    } catch {
-      // fall through
+    } catch (error) {
+      if (mustUseDatabase()) rethrowIfDbRequired(error);
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required to look up users");
+  }
+  if (!allowMemoryStore()) {
+    throw new DatabaseUnavailableError("Memory user store is disabled");
   }
   return memoryStore.users.find((u) => u.id === id) ?? null;
 }
@@ -71,9 +97,15 @@ export async function createUser(input: {
           role: input.role ?? "CUSTOMER"
         }
       });
-    } catch {
-      // fall through to memory for local demos
+    } catch (error) {
+      if (mustUseDatabase()) rethrowIfDbRequired(error);
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required to create users");
+  }
+
+  if (!allowMemoryStore()) {
+    throw new DatabaseUnavailableError("Memory user store is disabled");
   }
 
   const user: MemoryUser = {
@@ -104,8 +136,20 @@ export async function createUser(input: {
   return user;
 }
 
+const BLOCKED_DEMO_EMAILS = new Set(["admin@necoship.global", "demo@necoship.global", "customer@necoship.global"]);
+const BLOCKED_DEMO_PASSWORDS = new Set(["Admin123!", "Demo1234!", "demo-password", "password", "Password1"]);
+
+export function isBlockedDemoCredential(email: string, password?: string) {
+  const normalized = email.trim().toLowerCase();
+  if (BLOCKED_DEMO_EMAILS.has(normalized)) return true;
+  if (password && BLOCKED_DEMO_PASSWORDS.has(password)) return true;
+  return false;
+}
+
 export async function authenticateUser(email: string, password: string) {
-  await ensureSeedAdmin();
+  if (process.env.NODE_ENV === "production" && isBlockedDemoCredential(email, password)) {
+    return null;
+  }
   const user = await findUserByEmail(email);
   if (!user || !("passwordHash" in user) || !user.passwordHash) return null;
   const ok = await verifyPassword(password, user.passwordHash);
@@ -120,9 +164,14 @@ export async function markEmailVerified(userId: string) {
         where: { id: userId },
         data: { emailVerifiedAt: new Date() }
       });
-    } catch {
-      // fall through
+    } catch (error) {
+      if (mustUseDatabase()) rethrowIfDbRequired(error);
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required");
+  }
+  if (!allowMemoryStore()) {
+    throw new DatabaseUnavailableError("Memory user store is disabled");
   }
   const user = memoryStore.users.find((u) => u.id === userId);
   if (user) {
@@ -140,9 +189,14 @@ export async function updateUserPassword(userId: string, password: string) {
         where: { id: userId },
         data: { passwordHash }
       });
-    } catch {
-      // fall through
+    } catch (error) {
+      if (mustUseDatabase()) rethrowIfDbRequired(error);
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required");
+  }
+  if (!allowMemoryStore()) {
+    throw new DatabaseUnavailableError("Memory user store is disabled");
   }
   const user = memoryStore.users.find((u) => u.id === userId);
   if (user) {
@@ -159,9 +213,14 @@ export async function setTwoFactor(userId: string, secret: string, backupCodes: 
         where: { id: userId },
         data: { twoFactorEnabled: true, twoFactorSecret: secret, backupCodes }
       });
-    } catch {
-      // fall through
+    } catch (error) {
+      if (mustUseDatabase()) rethrowIfDbRequired(error);
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required");
+  }
+  if (!allowMemoryStore()) {
+    throw new DatabaseUnavailableError("Memory user store is disabled");
   }
   const user = memoryStore.users.find((u) => u.id === userId);
   if (user) {
@@ -177,46 +236,32 @@ export async function listUsers() {
   if (isDatabaseConfigured()) {
     try {
       return await prisma.user.findMany({ orderBy: { createdAt: "desc" } });
-    } catch {
-      // fall through
+    } catch (error) {
+      if (mustUseDatabase()) rethrowIfDbRequired(error);
     }
+  } else if (mustUseDatabase()) {
+    throw new DatabaseUnavailableError("DATABASE_URL is required");
+  }
+  if (!allowMemoryStore()) {
+    throw new DatabaseUnavailableError("Memory user store is disabled");
   }
   return memoryStore.users;
 }
 
+/**
+ * Only roles with admin console access map to the NextAuth "admin" app role.
+ * DRIVER / READ_ONLY / CUSTOMER never receive full admin.
+ */
 export function mapRoleToAppRole(role: string): "customer" | "admin" {
-  if (role === "CUSTOMER") return "customer";
-  return "admin";
+  return isAdminConsoleRole(role) ? "admin" : "customer";
 }
 
-let seedPromise: Promise<void> | null = null;
-
+/**
+ * @deprecated Runtime auto-seeding of default administrators is removed.
+ * Use `npm run db:seed` or `scripts/provision-admin.ts` with explicit credentials.
+ */
 export async function ensureSeedAdmin() {
-  if (memoryStore.users.some((u) => u.email === "admin@necoship.global")) return;
-  if (seedPromise) return seedPromise;
-  seedPromise = (async () => {
-    if (memoryStore.users.some((u) => u.email === "admin@necoship.global")) return;
-    const admin = await createUser({
-      email: "admin@necoship.global",
-      password: "Admin123!",
-      name: "NecoShip Admin",
-      role: "ADMIN",
-      accountType: "ENTERPRISE"
-    });
-    await markEmailVerified(admin.id);
-    const demo = await createUser({
-      email: "demo@necoship.global",
-      password: "Demo1234!",
-      name: "Demo Shipper",
-      role: "CUSTOMER",
-      accountType: "BUSINESS",
-      companyName: "Demo Logistics LLC"
-    });
-    await markEmailVerified(demo.id);
-  })();
-  return seedPromise;
+  return;
 }
-
-void ensureSeedAdmin();
 
 export { toMemoryRole };

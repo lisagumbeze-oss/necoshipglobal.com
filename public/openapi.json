@@ -3,13 +3,18 @@
   "info": {
     "title": "NecoShip Global API",
     "version": "1.0.0",
-    "description": "REST API for quotes, shipments, tracking, recipient delivery options, claims, and webhooks."
+    "description": "REST API for quotes, shipments, tracking, recipient delivery options, claims, and webhooks. Most authenticated routes use the NextAuth session cookie. X-API-Key is supported only on /api/shipments (GET/POST) for machine access belonging to the key owner; API keys never grant administrator privileges."
   },
   "servers": [{ "url": "/", "description": "Current deployment" }],
   "components": {
     "securitySchemes": {
       "sessionCookie": { "type": "apiKey", "in": "cookie", "name": "next-auth.session-token" },
-      "apiKey": { "type": "apiKey", "in": "header", "name": "X-API-Key" }
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key",
+        "description": "Hashed at rest. Active keys authenticate as the owning customer user on /api/shipments only. Revoked keys are rejected."
+      }
     },
     "schemas": {
       "ApiOk": {

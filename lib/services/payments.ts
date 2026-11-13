@@ -52,13 +52,17 @@ export async function createRefund(input: { paymentIntentId: string; amountCents
   return { id: refund.id, status: refund.status ?? "succeeded", provider: "stripe" as const };
 }
 
-export function constructStripeEvent(payload: string | Buffer, signature: string) {
+export async function constructStripeEvent(payload: string | Buffer, signature: string) {
+  if (process.env.NODE_ENV === "production") {
+    if (!env.stripeSecretKey || !env.stripeWebhookSecret) {
+      throw new Error("Stripe webhook secrets are required in production");
+    }
+  }
   if (!env.stripeSecretKey || !env.stripeWebhookSecret) {
+    // Development-only unsigned parse when secrets are intentionally unset.
     return JSON.parse(typeof payload === "string" ? payload : payload.toString("utf8"));
   }
-  // Dynamic require pattern kept async-friendly at call sites.
-  return import("stripe").then(({ default: Stripe }) => {
-    const stripe = new Stripe(env.stripeSecretKey!, { apiVersion: "2025-02-24.acacia" });
-    return stripe.webhooks.constructEvent(payload, signature, env.stripeWebhookSecret!);
-  });
+  const Stripe = (await import("stripe")).default;
+  const stripe = new Stripe(env.stripeSecretKey, { apiVersion: "2025-02-24.acacia" });
+  return stripe.webhooks.constructEvent(payload, signature, env.stripeWebhookSecret);
 }
