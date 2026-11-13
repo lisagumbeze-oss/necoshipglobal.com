@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Card } from "@/components/design-system/ui";
 import { BRAND } from "@/lib/brand";
@@ -38,12 +39,26 @@ export default function AboutPage() {
           </p>
         </header>
 
+        <figure className="space-y-2">
+          <div className="relative h-[280px] w-full overflow-hidden rounded-card bg-slate-100 md:h-[420px]">
+            <Image
+              src="/images/company/hq-exterior.jpg"
+              alt={`${BRAND.officialName} Los Angeles headquarters and logistics warehouse`}
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 1280px) 100vw, 1280px"
+            />
+          </div>
+          <figcaption className="text-sm text-slate-500">Los Angeles headquarters</figcaption>
+        </figure>
+
         <section>
           <h2 className="mb-6 font-display text-2xl font-bold text-brand-navy">Our story</h2>
           <div className="relative border-l-2 border-brand-yellow/40 pl-6">
             {milestones.map((m) => (
               <div key={m.year} className="relative mb-8 last:mb-0">
-                <span className="absolute -left-[31px] top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-yellow text-[10px] font-bold text-white">
+                <span className="absolute -left-[31px] top-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand-yellow text-[10px] font-bold text-brand-navy">
                   {m.year.slice(2)}
                 </span>
                 <p className="text-xs font-semibold uppercase tracking-wide text-brand-yellow">{m.year}</p>
@@ -51,6 +66,23 @@ export default function AboutPage() {
                 <p className="mt-1 text-sm text-slate-600">{m.detail}</p>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="font-display text-2xl font-bold text-brand-navy">Inside operations</h2>
+          <p className="max-w-2xl text-sm text-slate-600">
+            Our control-tower teams monitor every lane around the clock—exceptions, customs holds, and delivery
+            milestones in one coordinated floor.
+          </p>
+          <div className="relative h-[240px] w-full overflow-hidden rounded-card bg-slate-100 md:h-[360px]">
+            <Image
+              src="/images/company/operations-floor.jpg"
+              alt={`${BRAND.shortName} operations floor with branded workstations and live shipment monitors`}
+              fill
+              className="object-cover"
+              sizes="(max-width: 1280px) 100vw, 1280px"
+            />
           </div>
         </section>
 
@@ -103,7 +135,7 @@ export default function AboutPage() {
         </section>
 
         <div className="text-center">
-          <Link href="/contact" className="text-sm font-semibold text-brand-yellow underline">
+          <Link href="/contact" className="text-sm font-semibold text-brand-navy underline">
             Talk to our enterprise team
           </Link>
         </div>

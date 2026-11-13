@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Badge, Button, Card, Input } from "@/components/design-system/ui";
 import { BRAND } from "@/lib/brand";
@@ -86,6 +87,22 @@ export default function ContactPage() {
           </Card>
 
           <div className="space-y-4">
+            <figure className="overflow-hidden rounded-card border border-slate-200 bg-white">
+              <div className="relative h-40 w-full bg-slate-100 sm:h-48">
+                <Image
+                  src="/images/company/hq-exterior.jpg"
+                  alt={`${BRAND.officialName} Los Angeles headquarters`}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
+              </div>
+              <figcaption className="px-4 py-3 text-sm text-slate-600">
+                <span className="font-semibold text-brand-navy">Los Angeles HQ</span>
+                <span className="text-slate-400"> · </span>
+                Primary USA operations and support desk
+              </figcaption>
+            </figure>
             <Card className="space-y-3">
               <h2 className="font-semibold text-brand-navy">Regional offices</h2>
               <p className="text-sm text-slate-600">Local numbers and live clocks for each operations desk.</p>

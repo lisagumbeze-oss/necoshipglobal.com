@@ -247,12 +247,12 @@ export default function HomePage() {
               text: "Connected hubs across major cargo lanes with resilient rerouting."
             },
             {
-              src: "/images/highlights/warehouse-ops.svg",
+              src: "/images/company/hq-exterior.jpg",
               title: "Warehouse Precision",
               text: "Fulfillment-ready handling with barcode scanning and quality checks."
             },
             {
-              src: "/images/highlights/control-tower.svg",
+              src: "/images/company/operations-floor.jpg",
               title: "Operations Control Tower",
               text: "Live visibility and exception handling for every milestone."
             }
