@@ -125,6 +125,7 @@ export default function HomePage() {
       {/* PAGE 1.1 — Hero + floating search */}
       <section className="relative overflow-hidden bg-brand-navy px-4 pb-24 pt-16 text-white md:px-8 md:pb-28 md:pt-20">
         <HeroRoutesVisual />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-brand-navy/50 via-transparent to-brand-navy/70" />
         <div className="relative z-10 mx-auto max-w-7xl">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -198,7 +199,6 @@ export default function HomePage() {
             </Card>
           </motion.div>
         </div>
-        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-brand-yellow/30 blur-3xl" />
       </section>
 
       {/* Trust bar */}
