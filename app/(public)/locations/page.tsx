@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Badge, Card, Input } from "@/components/design-system/ui";
+import Link from "next/link";
+import { Badge, Button, Card, Input } from "@/components/design-system/ui";
 import { BRAND } from "@/lib/brand";
 import { locationPins, type LocationPin } from "@/lib/locations-data";
 import { MapPin } from "lucide-react";
@@ -29,8 +30,14 @@ export default function LocationsPage() {
     <main className="min-h-screen bg-brand-surface px-4 py-10 md:px-8">
       <div className="mx-auto max-w-7xl space-y-6">
         <header className="max-w-3xl">
-          <h1 className="font-display text-4xl font-bold text-brand-navy">Locations</h1>
-          <p className="mt-2 text-slate-600">Hubs and gateway offices across the {BRAND.name} network.</p>
+          <h1 className="font-display text-4xl font-bold text-brand-navy">Shipping locations</h1>
+          <p className="mt-2 text-slate-600">
+            Illustrative gateway cities used to describe {BRAND.name} lane planning. Addresses and hours below are
+            demonstration references for the public website and may not represent active walk-in facilities.
+          </p>
+          <p className="mt-2 rounded-input border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+            Demonstration data — confirm service availability for your lane when requesting a quotation.
+          </p>
         </header>
 
         <div className="flex flex-wrap gap-2">
@@ -48,16 +55,24 @@ export default function LocationsPage() {
           ))}
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <Card className="min-h-[320px] space-y-3 p-0 overflow-hidden">
-            <div className="flex h-full min-h-[320px] items-center justify-center bg-slate-100 text-slate-500">
-              <MapPin className="mr-2" size={20} aria-hidden />
-              Interactive world map — {filtered.length} location(s) match filters
-            </div>
+        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <Card className="flex min-h-[280px] flex-col items-center justify-center gap-3 bg-slate-100 text-center text-slate-600">
+            <MapPin size={22} aria-hidden />
+            <p className="max-w-sm text-sm">
+              Location map placeholder — {filtered.length} demonstration location(s) match the current filters.
+            </p>
+            <Link href="/quote">
+              <Button>Get a Quote for your lane</Button>
+            </Link>
           </Card>
 
           <div className="space-y-3">
-            <Input placeholder="Search city, country, or address" value={query} onChange={(e) => setQuery(e.target.value)} />
+            <Input
+              placeholder="Search city, country, or address"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              aria-label="Search shipping locations"
+            />
             <ul className="space-y-3">
               {filtered.map((loc) => (
                 <li key={loc.id}>
@@ -71,7 +86,7 @@ export default function LocationsPage() {
                       </div>
                       <Badge tone="default">{loc.id.toUpperCase()}</Badge>
                     </div>
-                    <p className="text-xs text-slate-600">Hours: {loc.hours}</p>
+                    <p className="text-xs text-slate-600">Reference hours: {loc.hours}</p>
                     <div className="flex flex-wrap gap-1">
                       {loc.services.map((s) => (
                         <span key={s} className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600">

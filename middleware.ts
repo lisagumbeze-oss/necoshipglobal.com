@@ -7,6 +7,8 @@ import {
   canAccessUserRoutes,
   isAdminPathname,
   isAuthLoginRegisterPathname,
+  isCorporatePathname,
+  isOperationsPathname,
   isUserAppPathname
 } from "@/lib/auth-routes";
 
@@ -41,14 +43,15 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  if (isUserAppPathname(pathname)) {
+  if (isUserAppPathname(pathname) || isCorporatePathname(pathname)) {
     if (!canAccessUserRoutes(role)) {
       return redirectToLogin(request, { nextPath: pathname });
     }
     return NextResponse.next();
   }
 
-  if (isAdminPathname(pathname)) {
+  // Internal ops / fleet / warehouse / dispatch / deliveries — admin only (no auth bypass).
+  if (isOperationsPathname(pathname) || isAdminPathname(pathname)) {
     if (!canAccessAdminRoutes(role)) {
       return redirectToLogin(request, { nextPath: pathname, requireAdmin: true });
     }

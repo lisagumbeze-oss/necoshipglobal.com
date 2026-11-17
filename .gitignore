@@ -5,6 +5,8 @@ node_modules/
 
 # next.js
 .next/
+.next-prod/
+.next-prod-m5/
 out/
 
 # production

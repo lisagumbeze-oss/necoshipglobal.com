@@ -9,7 +9,15 @@ async function main() {
 
   const admin = await prisma.user.upsert({
     where: { email: "admin@necoship.global" },
-    update: {},
+    update: {
+      name: "NecoShip Admin",
+      passwordHash: adminHash,
+      role: "ADMIN",
+      accountType: "ENTERPRISE",
+      emailVerifiedAt: new Date(),
+      twoFactorEnabled: false,
+      twoFactorSecret: null
+    },
     create: {
       email: "admin@necoship.global",
       name: "NecoShip Admin",
@@ -22,7 +30,17 @@ async function main() {
 
   const demo = await prisma.user.upsert({
     where: { email: "demo@necoship.global" },
-    update: {},
+    update: {
+      name: "Demo Shipper",
+      companyName: "Demo Logistics LLC",
+      passwordHash: demoHash,
+      role: "CUSTOMER",
+      accountType: "BUSINESS",
+      emailVerifiedAt: new Date(),
+      walletBalanceCents: 25000,
+      twoFactorEnabled: false,
+      twoFactorSecret: null
+    },
     create: {
       email: "demo@necoship.global",
       name: "Demo Shipper",

@@ -2,247 +2,179 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { useQuery } from "react-query";
-import {
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  useReactTable,
-  type ColumnDef
-} from "@tanstack/react-table";
-import { Badge, Button, Card, Input } from "@/components/design-system/ui";
-import { useDashboardFilters } from "@/lib/dashboard-store";
-import { apiQuery, titleStatus } from "@/lib/query-api";
+import { Button, Card, Input } from "@/components/design-system/ui";
+import { DashboardPageHeader } from "@/components/dashboard/page-header";
+import { EmptyState } from "@/components/dashboard/empty-state";
+import { ShipmentStatusBadge } from "@/components/dashboard/status-badge";
+import { demoShipments, type DemoShipment } from "@/lib/demo/customer-fixtures";
+import { SHIPMENT_STATUSES } from "@/lib/demo/shipment-status";
 
-type ShipmentRecord = {
-  id: string;
-  origin: string;
-  destination: string;
-  service: string;
-  status: string;
-  eta: string;
-  weightKg: number;
-  costUsd: number;
-  updatedAt: string;
-  recipient: string;
-};
-
-type ApiShipment = {
-  id: string;
-  trackingNumber: string;
-  origin: string;
-  destination: string;
-  serviceType: string;
-  status: string;
-  eta: string | null;
-  amountCents: number | null;
-  weightKg?: number | null;
-  recipientName?: string | null;
-  updatedAt?: string;
-};
-
-async function loadShipments(status?: string, q?: string): Promise<ShipmentRecord[]> {
-  const params = new URLSearchParams();
-  if (status && status !== "All") params.set("status", status);
-  if (q) params.set("q", q);
-  const data = await apiQuery<ApiShipment[]>(`/api/shipments?${params.toString()}`);
-  return data.map((s) => ({
-    id: s.trackingNumber,
-    origin: s.origin,
-    destination: s.destination,
-    service: titleStatus(s.serviceType),
-    status: titleStatus(s.status),
-    eta: s.eta ? new Date(s.eta).toLocaleDateString() : "—",
-    weightKg: s.weightKg ?? 0,
-    costUsd: (s.amountCents ?? 0) / 100,
-    updatedAt: s.updatedAt ?? new Date().toISOString(),
-    recipient: s.recipientName ?? ""
-  }));
-}
+const PAGE_SIZE = 5;
 
 export default function MyShipmentsPage() {
-  const { shipmentStatus, shipmentSearch, setFilter } = useDashboardFilters();
-  const [pageIndex, setPageIndex] = useState(0);
-  const [selected, setSelected] = useState<string[]>([]);
-  const pageSize = 8;
-  const query = useQuery(["shipments", shipmentStatus, shipmentSearch], () =>
-    loadShipments(shipmentStatus, shipmentSearch)
-  );
+  const [q, setQ] = useState("");
+  const [status, setStatus] = useState("ALL");
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [sort, setSort] = useState<"bookingDate" | "trackingNumber" | "status">("bookingDate");
+  const [page, setPage] = useState(0);
 
-  const rows = query.data ?? [];
+  const filtered = useMemo(() => {
+    let rows = [...demoShipments];
+    const query = q.trim().toLowerCase();
+    if (query) {
+      rows = rows.filter(
+        (s) =>
+          s.trackingNumber.toLowerCase().includes(query) ||
+          s.reference.toLowerCase().includes(query) ||
+          s.origin.toLowerCase().includes(query) ||
+          s.destination.toLowerCase().includes(query)
+      );
+    }
+    if (status !== "ALL") rows = rows.filter((s) => s.status === status);
+    if (from) rows = rows.filter((s) => s.bookingDate.slice(0, 10) >= from);
+    if (to) rows = rows.filter((s) => s.bookingDate.slice(0, 10) <= to);
+    rows.sort((a, b) => {
+      if (sort === "trackingNumber") return a.trackingNumber.localeCompare(b.trackingNumber);
+      if (sort === "status") return a.status.localeCompare(b.status);
+      return b.bookingDate.localeCompare(a.bookingDate);
+    });
+    return rows;
+  }, [q, status, from, to, sort]);
 
-  const columns = useMemo<ColumnDef<ShipmentRecord>[]>(
-    () => [
-      {
-        id: "select",
-        header: () => "Select",
-        cell: ({ row }) => (
-          <input
-            type="checkbox"
-            checked={selected.includes(row.original.id)}
-            onChange={(e) => {
-              setSelected((prev) =>
-                e.target.checked ? [...prev, row.original.id] : prev.filter((id) => id !== row.original.id)
-              );
-            }}
-          />
-        )
-      },
-      {
-        header: "Tracking #",
-        accessorKey: "id",
-        cell: ({ row }) => <span className="font-mono">{row.original.id}</span>
-      },
-      { header: "Origin", accessorKey: "origin" },
-      { header: "Destination", accessorKey: "destination" },
-      { header: "Service", accessorKey: "service" },
-      {
-        header: "Status",
-        accessorKey: "status",
-        cell: ({ row }) => (
-          <Badge
-            tone={
-              String(row.original.status).includes("Delivered")
-                ? "success"
-                : String(row.original.status).includes("Exception")
-                  ? "danger"
-                  : String(row.original.status).includes("Customs")
-                    ? "warning"
-                    : "default"
-            }
-          >
-            {row.original.status}
-          </Badge>
-        )
-      },
-      { header: "ETA", accessorKey: "eta" },
-      {
-        header: "Cost",
-        accessorKey: "costUsd",
-        cell: ({ row }) => `$${row.original.costUsd.toFixed(2)}`
-      },
-      {
-        header: "Action",
-        id: "action",
-        cell: ({ row }) => (
-          <Link href={`/shipments/${row.original.id}` as never} className="text-brand-navy underline">
-            View
-          </Link>
-        )
-      }
-    ],
-    [selected]
-  );
-
-  const table = useReactTable({
-    data: rows,
-    columns,
-    state: { pagination: { pageIndex, pageSize } },
-    onPaginationChange: (updater) => {
-      const next = typeof updater === "function" ? updater({ pageIndex, pageSize }) : updater;
-      setPageIndex(next.pageIndex);
-    },
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel()
-  });
-
-  const exportCsv = () => {
-    const ids = selected.length ? selected : rows.map((r) => r.id);
-    const subset = rows.filter((r) => ids.includes(r.id));
-    const csv = ["tracking,origin,destination,status,cost", ...subset.map((r) => `${r.id},${r.origin},${r.destination},${r.status},${r.costUsd}`)].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "shipments.csv";
-    a.click();
-    URL.revokeObjectURL(url);
-  };
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const pageRows = filtered.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
 
   return (
-    <main className="space-y-4 p-2">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="font-display text-3xl font-bold text-brand-navy">My Shipments</h1>
-          <p className="text-sm text-slate-600">Filter, export, and manage bookings across your account.</p>
-        </div>
-        <Link href={"/create-shipment" as never}>
-          <Button type="button">Create Shipment</Button>
-        </Link>
-      </header>
+    <section className="mx-auto max-w-6xl space-y-5">
+      <DashboardPageHeader
+        title="My Shipments"
+        description="Search, filter and open demonstration shipment records."
+        actions={
+          <Link href={"/create-shipment" as never}>
+            <Button>New Shipment</Button>
+          </Link>
+        }
+      />
 
-      <Card className="space-y-3">
-        <div className="flex flex-wrap gap-2">
-          <Input
-            placeholder="Search tracking / recipient"
-            value={shipmentSearch}
-            onChange={(e) => setFilter("shipmentSearch", e.target.value)}
-          />
-          <select
-            className="h-11 rounded-input border border-slate-300 px-3 text-sm"
-            value={shipmentStatus}
-            onChange={(e) => setFilter("shipmentStatus", e.target.value as never)}
-          >
-            {["All", "In Transit", "Delivered", "Exception", "Customs Hold", "Out for Delivery", "LABEL_CREATED"].map(
-              (status) => (
-                <option key={status} value={status}>
-                  {status}
-                </option>
-              )
-            )}
-          </select>
-          <Button type="button" variant="secondary" onClick={exportCsv}>
-            Export CSV
-          </Button>
-          <Button type="button" variant="ghost" disabled={!selected.length}>
-            Bulk labels ({selected.length})
-          </Button>
-        </div>
+      <Card className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+        <Input
+          placeholder="Search tracking, reference, lane…"
+          value={q}
+          onChange={(e) => {
+            setPage(0);
+            setQ(e.target.value);
+          }}
+          aria-label="Search shipments"
+        />
+        <select
+          className="focus-ring h-11 rounded-input border border-slate-300 bg-white px-3 text-sm"
+          value={status}
+          onChange={(e) => {
+            setPage(0);
+            setStatus(e.target.value);
+          }}
+          aria-label="Status filter"
+        >
+          <option value="ALL">All statuses</option>
+          {SHIPMENT_STATUSES.map((s) => (
+            <option key={s} value={s}>
+              {s.replaceAll("_", " ")}
+            </option>
+          ))}
+        </select>
+        <Input type="date" value={from} onChange={(e) => { setPage(0); setFrom(e.target.value); }} aria-label="From date" />
+        <Input type="date" value={to} onChange={(e) => { setPage(0); setTo(e.target.value); }} aria-label="To date" />
+        <select
+          className="focus-ring h-11 rounded-input border border-slate-300 bg-white px-3 text-sm"
+          value={sort}
+          onChange={(e) => setSort(e.target.value as typeof sort)}
+          aria-label="Sort shipments"
+        >
+          <option value="bookingDate">Sort: booking date</option>
+          <option value="trackingNumber">Sort: tracking number</option>
+          <option value="status">Sort: status</option>
+        </select>
+      </Card>
 
-        <div className="overflow-x-auto">
+      {pageRows.length === 0 ? (
+        <EmptyState
+          title="No shipments match"
+          description="Adjust filters or create a new demonstration shipment request."
+          action={
+            <Link href={"/create-shipment" as never}>
+              <Button variant="secondary">New Shipment</Button>
+            </Link>
+          }
+        />
+      ) : (
+        <Card className="overflow-x-auto p-0">
           <table className="min-w-full text-left text-sm">
-            <thead>
-              {table.getHeaderGroups().map((hg) => (
-                <tr key={hg.id} className="border-b border-slate-200 text-slate-500">
-                  {hg.headers.map((header) => (
-                    <th key={header.id} className="px-2 py-2 font-medium">
-                      {flexRender(header.column.columnDef.header, header.getContext())}
-                    </th>
-                  ))}
-                </tr>
-              ))}
+            <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+              <tr>
+                <th className="px-4 py-3">Tracking Number</th>
+                <th className="px-4 py-3">Reference</th>
+                <th className="px-4 py-3">Origin</th>
+                <th className="px-4 py-3">Destination</th>
+                <th className="px-4 py-3">Method</th>
+                <th className="px-4 py-3">Booking Date</th>
+                <th className="px-4 py-3">Est. Delivery</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3">Actions</th>
+              </tr>
             </thead>
             <tbody>
-              {table.getRowModel().rows.map((row) => (
-                <tr key={row.id} className="border-b border-slate-100">
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-2 py-2">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-                </tr>
+              {pageRows.map((s) => (
+                <ShipmentRow key={s.id} shipment={s} />
               ))}
             </tbody>
           </table>
-        </div>
+        </Card>
+      )}
 
-        <div className="flex items-center justify-between">
-          <Button type="button" variant="ghost" disabled={pageIndex === 0} onClick={() => setPageIndex((p) => p - 1)}>
+      <div className="flex items-center justify-between gap-3 text-sm text-slate-600">
+        <p>
+          Showing {pageRows.length} of {filtered.length} demonstration records
+        </p>
+        <div className="flex gap-2">
+          <Button variant="ghost" type="button" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>
             Previous
           </Button>
-          <p className="text-xs text-slate-500">
-            Page {pageIndex + 1} · {rows.length} shipments
-          </p>
+          <span className="px-2 py-2">
+            Page {page + 1} / {pageCount}
+          </span>
           <Button
-            type="button"
             variant="ghost"
-            disabled={(pageIndex + 1) * pageSize >= rows.length}
-            onClick={() => setPageIndex((p) => p + 1)}
+            type="button"
+            disabled={page + 1 >= pageCount}
+            onClick={() => setPage((p) => p + 1)}
           >
             Next
           </Button>
         </div>
-      </Card>
-    </main>
+      </div>
+    </section>
+  );
+}
+
+function ShipmentRow({ shipment: s }: { shipment: DemoShipment }) {
+  return (
+    <tr className="border-b border-slate-100 last:border-0">
+      <td className="px-4 py-3 font-mono text-xs font-semibold text-brand-navy">{s.trackingNumber}</td>
+      <td className="px-4 py-3">{s.reference}</td>
+      <td className="px-4 py-3">{s.origin}</td>
+      <td className="px-4 py-3">{s.destination}</td>
+      <td className="px-4 py-3">{s.method}</td>
+      <td className="px-4 py-3">{new Date(s.bookingDate).toLocaleDateString()}</td>
+      <td className="px-4 py-3">{s.estimatedDelivery ? new Date(s.estimatedDelivery).toLocaleDateString() : "—"}</td>
+      <td className="px-4 py-3">
+        <ShipmentStatusBadge status={s.status} />
+      </td>
+      <td className="px-4 py-3">
+        <Link href={`/shipments/${s.trackingNumber}` as never} className="font-semibold text-brand-navy hover:underline">
+          View
+        </Link>
+      </td>
+    </tr>
   );
 }

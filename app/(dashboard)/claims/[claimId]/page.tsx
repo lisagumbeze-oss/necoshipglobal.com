@@ -1,41 +1,50 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { useQuery } from "react-query";
-import { Badge, Card } from "@/components/design-system/ui";
-import { apiFetch } from "@/lib/client-api";
+import Link from "next/link";
+import { Button, Card } from "@/components/design-system/ui";
+import { DashboardPageHeader } from "@/components/dashboard/page-header";
+import { ToneBadge } from "@/components/dashboard/status-badge";
+import { demoClaims } from "@/lib/demo/customer-fixtures";
 
-export default function ClaimDetailPage() {
-  const params = useParams<{ claimId: string }>();
-  const query = useQuery(["claim", params.claimId], async () => {
-    const res = await apiFetch<{
-      number: string;
-      status: string;
-      type: string;
-      description: string;
-      amountCents: number | null;
-      createdAt: string;
-    }>(`/api/claims/${params.claimId}`);
-    if (!res.ok) throw new Error(res.error);
-    return res.data;
-  });
-
-  if (query.isLoading) return <main className="p-4">Loading claim…</main>;
-  if (query.isError) return <main className="p-4 text-red-700">{(query.error as Error).message}</main>;
-  const claim = query.data!;
+export default function ClaimDetailPage({ params }: { params: { claimId: string } }) {
+  const claim = demoClaims.find((c) => c.id === params.claimId) ?? {
+    id: params.claimId,
+    reference: params.claimId,
+    category: "OTHER" as const,
+    shipmentReference: "—",
+    status: "SUBMITTED" as const,
+    createdAt: new Date().toISOString(),
+    summary: "Local demonstration claim detail.",
+    documents: [] as string[]
+  };
 
   return (
-    <main className="space-y-4 p-2">
-      <header className="flex items-center justify-between gap-2">
-        <h1 className="font-display text-3xl font-bold text-brand-navy">{claim.number}</h1>
-        <Badge>{claim.status}</Badge>
-      </header>
-      <Card className="space-y-2 text-sm">
-        <p className="capitalize">Type: {claim.type}</p>
-        <p>{claim.description}</p>
-        <p>Amount: {claim.amountCents != null ? `$${(claim.amountCents / 100).toFixed(2)}` : "—"}</p>
-        <p className="text-slate-500">Filed {new Date(claim.createdAt).toLocaleString()}</p>
+    <section className="mx-auto max-w-3xl space-y-5">
+      <DashboardPageHeader
+        title={claim.reference}
+        description="Claim detail — sample conversation and documents only."
+        actions={
+          <Link href={"/claims" as never}>
+            <Button variant="secondary">Back to claims</Button>
+          </Link>
+        }
+      />
+      <Card className="space-y-3">
+        <ToneBadge label={claim.status.replaceAll("_", " ")} tone="warning" />
+        <p className="text-sm text-slate-600">{claim.summary}</p>
+        <p className="text-xs text-slate-500">
+          Category {claim.category.replaceAll("_", " ")} · Shipment {claim.shipmentReference}
+        </p>
+        <p className="text-xs text-slate-500">Created {new Date(claim.createdAt).toLocaleString()}</p>
+        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+          Supporting documents listed here are demonstration filenames and are not retrieved from external storage.
+          <ul className="mt-2 list-disc pl-5">
+            {(claim.documents.length ? claim.documents : ["No files"]).map((d) => (
+              <li key={d}>{d}</li>
+            ))}
+          </ul>
+        </div>
       </Card>
-    </main>
+    </section>
   );
 }
