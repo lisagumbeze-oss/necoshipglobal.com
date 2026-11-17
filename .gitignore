@@ -7,6 +7,7 @@ node_modules/
 .next/
 .next-prod/
 .next-prod-m5/
+.next-prod-m63a/
 out/
 
 # production
