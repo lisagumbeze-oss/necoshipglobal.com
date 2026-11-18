@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Button, Card } from "@/components/design-system/ui";
+import { ButtonLink, Card } from "@/components/design-system/ui";
 
 export default function NotFound() {
   return (
@@ -12,14 +11,10 @@ export default function NotFound() {
             The route you requested does not exist or may have moved. Use dashboard navigation or return to home.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <Link href="/" className="inline-flex">
-              <Button type="button">Go Home</Button>
-            </Link>
-            <Link href="/dashboard" className="inline-flex">
-              <Button variant="secondary" type="button">
-                Open Dashboard
-              </Button>
-            </Link>
+            <ButtonLink href="/">Go Home</ButtonLink>
+            <ButtonLink href="/dashboard" variant="secondary">
+              Open Dashboard
+            </ButtonLink>
           </div>
         </Card>
       </section>
