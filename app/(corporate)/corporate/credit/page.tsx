@@ -10,7 +10,7 @@ export default function CorporateCreditPage() {
   const credit = demoCreditProfile;
 
   return (
-    <section className="mx-auto max-w-4xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Credit management"
         description="Enterprise credit overview for the demonstration organization. Organizations cannot alter their own credit limit."
@@ -22,7 +22,7 @@ export default function CorporateCreditPage() {
           : "Not connected to live finance systems. Figures below are explicit demonstration examples only."}
       </Card>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {[
           { label: "Approved credit limit", value: credit.approvedLimitLabel },
           { label: "Outstanding balance", value: credit.outstandingBalanceLabel },
@@ -33,10 +33,10 @@ export default function CorporateCreditPage() {
           { label: "Credit approval status", value: credit.approvalStatus },
           { label: "Credit review date", value: credit.reviewDate }
         ].map((item) => (
-          <Card key={item.label} className="space-y-1">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{item.label}</p>
-            <p className="font-semibold text-brand-navy">{item.value}</p>
-            <p className="text-[11px] text-amber-800">Demonstration / not live</p>
+          <Card key={item.label} className="space-y-1 border-l-4 border-l-brand-yellow">
+            <p className="ns-meta font-semibold uppercase tracking-wide">{item.label}</p>
+            <p className="font-display text-lg font-bold text-brand-navy">{item.value}</p>
+            <p className="ns-meta text-amber-800">Demonstration / not live</p>
           </Card>
         ))}
       </div>
@@ -44,7 +44,7 @@ export default function CorporateCreditPage() {
       <Card className="text-sm text-slate-600">{credit.note}</Card>
 
       <Card className="space-y-3">
-        <h2 className="font-semibold text-brand-navy">Credit request</h2>
+        <h2 className="ns-card-title">Credit request</h2>
         <p className="text-sm text-slate-600">
           Submit a demonstration credit review for {demoOrganization.tradingName}. Requests are never auto-approved.
           Financial approval belongs to authorized NECO Finance or Administration in a later backend implementation.

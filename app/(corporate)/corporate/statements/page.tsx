@@ -7,7 +7,7 @@ export default function CorporateStatementsPage() {
   const months = Array.from(new Set(invoices.map((i) => i.billingPeriod)));
 
   return (
-    <section className="mx-auto max-w-4xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Monthly statements"
         description="Demonstration corporate credit statements. Not live financial statements."

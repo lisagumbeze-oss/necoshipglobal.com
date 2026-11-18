@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button, Card } from "@/components/design-system/ui";
+import { Button, Card, ButtonLink } from "@/components/design-system/ui";
 import { BRAND } from "@/lib/brand";
 
 const topics = [
@@ -31,11 +31,12 @@ const topics = [
 
 export default function SupportPage() {
   return (
-    <main className="min-h-screen bg-brand-surface px-4 py-10 md:px-8">
-      <div className="mx-auto max-w-7xl space-y-8">
+    <main className="bg-brand-surface">
+      <div className="ns-container max-w-ns-xl space-y-8 py-10 md:py-14">
         <header className="max-w-3xl">
-          <h1 className="font-display text-4xl font-bold text-brand-navy">Customer support</h1>
-          <p className="mt-2 text-slate-600">
+          <p className="ns-meta font-semibold uppercase tracking-[0.16em] text-brand-navy">Help</p>
+          <h1 className="ns-page-title mt-2">Customer support</h1>
+          <p className="ns-body mt-2 text-base">
             Support options for {BRAND.name} customers and recipients. For urgent shipment questions, include your
             tracking number when contacting us.
           </p>
@@ -54,18 +55,14 @@ export default function SupportPage() {
                 <p className="font-semibold text-brand-navy">{topic.title}</p>
                 <p className="mt-2 text-sm text-slate-600">{topic.text}</p>
               </div>
-              <Link href={topic.href as never}>
-                <Button variant="secondary">{topic.cta}</Button>
-              </Link>
+              <ButtonLink href={topic.href as never} variant="secondary">{topic.cta}</ButtonLink>
             </Card>
           ))}
         </div>
 
         <Card className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-slate-600">Looking for policies, prohibited items or developer docs?</p>
-          <Link href="/resources">
-            <Button>Browse resources</Button>
-          </Link>
+          <ButtonLink href="/resources">Browse resources</ButtonLink>
         </Card>
       </div>
     </main>

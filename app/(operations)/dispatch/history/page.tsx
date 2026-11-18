@@ -8,7 +8,7 @@ export default function DispatchHistoryPage() {
   const history = demoManifests.filter((m) => ["COMPLETED", "CANCELLED", "DEPARTED"].includes(m.status));
 
   return (
-    <section className="mx-auto max-w-5xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Dispatch history"
         description="Completed, departed and cancelled demonstration manifests."

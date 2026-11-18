@@ -5,7 +5,7 @@ import { demoDeliveryAttempts, demoDeliveries } from "@/lib/demo/operations-fixt
 
 export default function DeliveryAttemptsPage() {
   return (
-    <section className="mx-auto max-w-4xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Delivery attempts"
         description="Demonstration attempt history. Outcomes are sample records only."

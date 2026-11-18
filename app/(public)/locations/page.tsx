@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Badge, Button, Card, Input } from "@/components/design-system/ui";
+import { Badge, Button, Card, Input, ButtonLink } from "@/components/design-system/ui";
 import { BRAND } from "@/lib/brand";
 import { locationPins, type LocationPin } from "@/lib/locations-data";
 import { MapPin } from "lucide-react";
@@ -27,15 +27,16 @@ export default function LocationsPage() {
   }, [service, query]);
 
   return (
-    <main className="min-h-screen bg-brand-surface px-4 py-10 md:px-8">
-      <div className="mx-auto max-w-7xl space-y-6">
+    <main className="bg-brand-surface">
+      <div className="ns-container max-w-ns-xl space-y-6 py-10 md:py-14">
         <header className="max-w-3xl">
-          <h1 className="font-display text-4xl font-bold text-brand-navy">Shipping locations</h1>
-          <p className="mt-2 text-slate-600">
+          <p className="ns-meta font-semibold uppercase tracking-[0.16em] text-brand-navy">Network</p>
+          <h1 className="ns-page-title mt-2">Shipping locations</h1>
+          <p className="ns-body mt-2 text-base">
             Illustrative gateway cities used to describe {BRAND.name} lane planning. Addresses and hours below are
             demonstration references for the public website and may not represent active walk-in facilities.
           </p>
-          <p className="mt-2 rounded-input border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          <p className="mt-3 rounded-input border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
             Demonstration data — confirm service availability for your lane when requesting a quotation.
           </p>
         </header>
@@ -61,9 +62,7 @@ export default function LocationsPage() {
             <p className="max-w-sm text-sm">
               Location map placeholder — {filtered.length} demonstration location(s) match the current filters.
             </p>
-            <Link href="/quote">
-              <Button>Get a Quote for your lane</Button>
-            </Link>
+            <ButtonLink href="/quote">Get a Quote for your lane</ButtonLink>
           </Card>
 
           <div className="space-y-3">

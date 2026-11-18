@@ -7,7 +7,7 @@ export default function CorporateContractsPage() {
   const contracts = scopeByOrganization(demoContracts);
 
   return (
-    <section className="mx-auto max-w-5xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Contract management"
         description="Demonstration contracts for the sample organization. Synthetic schedules are not signed agreements."

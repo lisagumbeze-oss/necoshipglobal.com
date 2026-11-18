@@ -7,7 +7,7 @@ import { DRIVER_AVAILABILITY_CONFIG } from "@/lib/demo/operations-status";
 
 export default function FleetDriversPage() {
   return (
-    <section className="mx-auto max-w-6xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Driver directory"
         description="Demonstration drivers aligned with DriverProfile concepts. Availability is UI status — not live duty telemetry."

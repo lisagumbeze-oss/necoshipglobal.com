@@ -22,7 +22,7 @@ export default function CorporateShipmentDetailPage({ params }: { params: { ship
   }
 
   return (
-    <section className="mx-auto max-w-4xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title={shipment.trackingNumber}
         description={`Reference ${shipment.reference} · demonstration corporate shipment`}

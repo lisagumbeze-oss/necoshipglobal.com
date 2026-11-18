@@ -6,7 +6,7 @@ export default function CorporateOrganizationPage() {
   const org = demoOrganization;
 
   return (
-    <section className="mx-auto max-w-4xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Company profile"
         description="Sample organization information for UI development. Not invented as genuine legal company records."

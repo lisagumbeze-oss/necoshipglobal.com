@@ -6,7 +6,7 @@ import { OPS_UI_ROLES } from "@/lib/demo/operations-status";
 export default function OperationsReportsPage() {
   const stats = getOpsOverviewStats();
   return (
-    <section className="mx-auto max-w-5xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Operations reports"
         description="High-level demonstration summaries for managers. Not actual NECO performance statistics."

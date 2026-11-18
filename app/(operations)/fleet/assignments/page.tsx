@@ -22,7 +22,7 @@ export default function FleetAssignmentsPage() {
   }, [driverId, vehicleId]);
 
   return (
-    <section className="mx-auto max-w-5xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Driver & vehicle assignments"
         description="Demonstration assignment board. Conflicting selections are highlighted. No live dispatch actions are executed."

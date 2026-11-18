@@ -6,7 +6,7 @@ import { PACKAGE_CUSTODY_CONFIG } from "@/lib/demo/operations-status";
 
 export default function WarehouseInventoryPage() {
   return (
-    <section className="mx-auto max-w-6xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Parcel custody & sorting"
         description="Physical package custody — distinct from retail SKU InventoryItem quantities in Prisma."

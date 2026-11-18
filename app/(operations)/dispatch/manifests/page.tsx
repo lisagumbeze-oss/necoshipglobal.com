@@ -6,7 +6,7 @@ import { MANIFEST_STATUS_CONFIG } from "@/lib/demo/operations-status";
 
 export default function DispatchManifestsPage() {
   return (
-    <section className="mx-auto max-w-5xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Dispatch manifests"
         description="Demonstration manifests with driver, vehicle and shipment allocation."

@@ -4,7 +4,7 @@ import { demoWarehouseMovements } from "@/lib/demo/operations-fixtures";
 
 export default function WarehouseTransfersPage() {
   return (
-    <section className="mx-auto max-w-5xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Warehouse movements"
         description="Demonstration package transfer history (WarehouseMovement-aligned). Not live scan events."

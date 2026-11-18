@@ -12,7 +12,7 @@ export default function WarehouseReceivingPage() {
   const [notice, setNotice] = useState("");
 
   return (
-    <section className="mx-auto max-w-3xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Inbound receiving"
         description="Demonstration receiving workflow for parcel custody. Does not create live warehouse movements."

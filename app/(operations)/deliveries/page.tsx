@@ -1,8 +1,11 @@
+"use client";
+
 import Link from "next/link";
-import { Card } from "@/components/design-system/ui";
+import { Card, DataTable, KpiCard } from "@/components/design-system";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
 import { OpsStatusBadge } from "@/components/operations/ops-status-badge";
-import { demoDeliveries } from "@/lib/demo/operations-fixtures";
+import { OpsDemoNote } from "@/components/operations/ops-demo-note";
+import { demoDeliveries, demoDrivers, demoVehicles, type DemoDelivery } from "@/lib/demo/operations-fixtures";
 import { DELIVERY_STATUS_CONFIG } from "@/lib/demo/operations-status";
 
 export default function DeliveriesOverviewPage() {
@@ -17,61 +20,87 @@ export default function DeliveriesOverviewPage() {
   };
 
   return (
-    <section className="mx-auto max-w-6xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Delivery management"
-        description="Last-mile demonstration board. Recipient details are restricted labels only."
+        description="Last-mile demonstration board aligned with UI-37 hierarchy. Recipient details remain restricted labels."
       />
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          { label: "Pending", value: counts.pending },
-          { label: "Assigned", value: counts.assigned },
-          { label: "Out for delivery", value: counts.out },
-          { label: "Delivered", value: counts.delivered },
-          { label: "Failed attempts", value: counts.failed },
-          { label: "Rescheduled", value: counts.rescheduled },
-          { label: "Exceptions", value: counts.exception }
-        ].map((i) => (
-          <Card key={i.label} className="space-y-1 p-4">
-            <p className="text-[11px] font-semibold uppercase text-slate-500">{i.label}</p>
-            <p className="font-display text-2xl font-bold text-brand-navy">{i.value}</p>
-            <p className="text-[11px] text-amber-800">Demonstration</p>
-          </Card>
-        ))}
+
+      <OpsDemoNote title="No fabricated delivery confirmations">
+        <p>Status counts and rows are demonstration fixtures. Open a delivery for route timeline and POD state.</p>
+      </OpsDemoNote>
+
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <KpiCard label="Pending" value={counts.pending} hint="Demonstration" tone="default" />
+        <KpiCard label="Assigned" value={counts.assigned} hint="Demonstration" tone="info" />
+        <KpiCard label="Out for delivery" value={counts.out} hint="Demonstration" tone="warning" />
+        <KpiCard label="Delivered" value={counts.delivered} hint="Fixture evidence only" tone="success" />
       </div>
-      <Card className="overflow-x-auto p-0">
-        <table className="min-w-full text-left text-sm">
-          <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-            <tr>
-              <th className="px-4 py-3">Reference</th>
-              <th className="px-4 py-3">Shipment</th>
-              <th className="px-4 py-3">Address</th>
-              <th className="px-4 py-3">Scheduled</th>
-              <th className="px-4 py-3">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {demoDeliveries.map((d) => (
-              <tr key={d.id} className="border-b border-slate-100 last:border-0">
-                <td className="px-4 py-3">
-                  <Link href={`/deliveries/${d.id}` as never} className="font-mono font-semibold text-brand-navy hover:underline">
-                    {d.reference}
-                  </Link>
-                </td>
-                <td className="px-4 py-3 font-mono text-xs">{d.trackingNumber}</td>
-                <td className="px-4 py-3">{d.address}</td>
-                <td className="px-4 py-3">{d.scheduledDate}</td>
-                <td className="px-4 py-3">
-                  <OpsStatusBadge
-                    label={DELIVERY_STATUS_CONFIG[d.status].label}
-                    tone={DELIVERY_STATUS_CONFIG[d.status].tone}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="grid gap-3 sm:grid-cols-3">
+        <KpiCard label="Failed attempts" value={counts.failed} hint="Demonstration" tone="danger" />
+        <KpiCard label="Rescheduled" value={counts.rescheduled} hint="Demonstration" tone="warning" />
+        <KpiCard label="Exceptions" value={counts.exception} hint="Demonstration" tone="danger" />
+      </div>
+
+      <Card className="flex flex-wrap gap-2 text-sm">
+        {[
+          { href: "/deliveries/assigned", label: "Assigned" },
+          { href: "/deliveries/out-for-delivery", label: "Out for delivery" },
+          { href: "/deliveries/completed", label: "Completed" },
+          { href: "/deliveries/attempts", label: "Attempts" },
+          { href: "/deliveries/failed", label: "Failed" }
+        ].map((item) => (
+          <Link
+            key={item.href}
+            href={item.href as never}
+            className="focus-ring rounded-input border border-ns-border px-3 py-2 font-semibold text-brand-navy hover:bg-brand-surface-muted"
+          >
+            {item.label}
+          </Link>
+        ))}
       </Card>
+
+      <DataTable<DemoDelivery>
+        rows={demoDeliveries}
+        rowKey={(row) => row.id}
+        columns={[
+          {
+            id: "reference",
+            header: "Reference",
+            cell: (d) => (
+              <Link
+                href={`/deliveries/${d.id}` as never}
+                className="font-mono text-xs font-semibold text-brand-navy hover:underline"
+              >
+                {d.reference}
+              </Link>
+            )
+          },
+          { id: "tracking", header: "Shipment", cell: (d) => <span className="font-mono text-xs">{d.trackingNumber}</span> },
+          { id: "address", header: "Address", cell: (d) => d.address },
+          {
+            id: "driver",
+            header: "Driver",
+            cell: (d) => demoDrivers.find((x) => x.id === d.driverId)?.name ?? "—"
+          },
+          {
+            id: "vehicle",
+            header: "Vehicle",
+            cell: (d) => demoVehicles.find((x) => x.id === d.vehicleId)?.reference ?? "—"
+          },
+          { id: "scheduled", header: "Scheduled", cell: (d) => d.scheduledDate },
+          {
+            id: "status",
+            header: "Status",
+            cell: (d) => (
+              <OpsStatusBadge
+                label={DELIVERY_STATUS_CONFIG[d.status].label}
+                tone={DELIVERY_STATUS_CONFIG[d.status].tone}
+              />
+            )
+          }
+        ]}
+      />
     </section>
   );
 }

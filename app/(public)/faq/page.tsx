@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { PageShell } from "@/components/pages/page-shell";
+import { Button, ButtonLink } from "@/components/design-system/ui";
+import { PublicPage, PublicPageHeader, PublicSection } from "@/components/public/public-page";
 
 const faqs = [
   {
@@ -30,22 +31,34 @@ const faqs = [
 
 export default function FaqPage() {
   return (
-    <PageShell title="FAQ" subtitle="Answers to common quotation, tracking, documentation and support questions.">
-      <div className="space-y-4">
-        {faqs.map((item) => (
-          <details key={item.q} className="rounded-card border border-slate-200 bg-white p-4">
-            <summary className="cursor-pointer font-semibold text-brand-navy">{item.q}</summary>
-            <p className="mt-2 text-sm text-slate-600">{item.a}</p>
-          </details>
-        ))}
-        <p className="text-sm text-slate-600">
-          More references are available in the{" "}
-          <Link href="/resources" className="font-semibold text-brand-navy hover:underline">
-            Resources
-          </Link>{" "}
-          centre.
-        </p>
-      </div>
-    </PageShell>
+    <PublicPage>
+      <PublicSection>
+        <PublicPageHeader
+          eyebrow="Help"
+          title="FAQ"
+          description="Answers to common quotation, tracking, documentation and support questions."
+          actions={
+            <ButtonLink href="/contact" variant="secondary">Contact support</ButtonLink>
+          }
+        />
+      </PublicSection>
+      <PublicSection tone="white" className="pt-0 md:pt-0">
+        <div className="mx-auto max-w-3xl space-y-3">
+          {faqs.map((item) => (
+            <details key={item.q} className="rounded-card border border-ns-border bg-white p-4 shadow-sm">
+              <summary className="cursor-pointer font-semibold text-brand-navy">{item.q}</summary>
+              <p className="mt-2 text-sm text-slate-600">{item.a}</p>
+            </details>
+          ))}
+          <p className="ns-body pt-2">
+            More references are available in the{" "}
+            <Link href="/resources" className="font-semibold text-brand-navy hover:underline">
+              Resources
+            </Link>{" "}
+            centre.
+          </p>
+        </div>
+      </PublicSection>
+    </PublicPage>
   );
 }

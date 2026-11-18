@@ -10,7 +10,7 @@ export default function WarehouseIncomingPage() {
   );
 
   return (
-    <section className="mx-auto max-w-5xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Incoming shipments"
         description="Expected and arriving demonstration parcels for warehouse receiving."

@@ -15,13 +15,13 @@ export function RecipientPortalView({ data }: { data: DemoRecipientPortal }) {
   const [notice, setNotice] = useState("");
 
   return (
-    <main className="min-h-screen bg-brand-surface px-4 py-8 md:px-8">
-      <div className="mx-auto max-w-5xl space-y-5">
+    <main className="bg-brand-surface">
+      <div className="ns-container max-w-ns-lg space-y-5 py-8">
         <DemoDataBanner />
         <header className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-yellow">Recipient portal</p>
-          <h1 className="font-display text-3xl font-bold text-brand-navy">Shipment for {data.recipientName}</h1>
-          <p className="text-sm text-slate-600">{data.tokenHint}</p>
+          <p className="ns-meta font-semibold uppercase tracking-[0.16em] text-brand-navy">Recipient portal</p>
+          <h1 className="ns-page-title">Shipment for {data.recipientName}</h1>
+          <p className="ns-body">{data.tokenHint}</p>
         </header>
 
         <div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">

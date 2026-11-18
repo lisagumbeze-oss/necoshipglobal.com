@@ -9,7 +9,7 @@ export default function DriverDetailPage({ params }: { params: { driverId: strin
   const driver = getDriver(params.driverId);
   if (!driver) {
     return (
-      <section className="mx-auto max-w-3xl space-y-4">
+      <section className="mx-auto max-w-ns-xl space-y-4">
         <DashboardPageHeader title="Driver not found" description="No demonstration driver matches." />
         <Link href={"/fleet/drivers" as never}>
           <Button variant="secondary">Back</Button>
@@ -21,7 +21,7 @@ export default function DriverDetailPage({ params }: { params: { driverId: strin
   const history = demoDeliveries.filter((d) => d.driverId === driver.id);
 
   return (
-    <section className="mx-auto max-w-3xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title={driver.name}
         description={`${driver.reference} · ${driver.region}`}

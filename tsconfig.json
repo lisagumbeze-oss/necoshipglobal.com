@@ -36,7 +36,15 @@
     ".next-prod/types/**/*.ts",
     ".next-prod-m5/types/**/*.ts",
     ".next-prod-m63a/types/**/*.ts",
-    ".next-prod-m63gc/types/**/*.ts"
+    ".next-prod-m63gc/types/**/*.ts",
+    ".next-prod-ui1/types/**/*.ts",
+    ".next-prod-ui2/types/**/*.ts",
+    ".next-prod-ui3/types/**/*.ts",
+    ".next-prod-ui4/types/**/*.ts",
+    ".next-prod-ui5/types/**/*.ts",
+    ".next-prod-ui6/types/**/*.ts",
+    ".next-prod-ui7/types/**/*.ts",
+    ".next-prod-phase9/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

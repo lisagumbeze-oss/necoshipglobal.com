@@ -5,7 +5,7 @@ import { OPS_EVENT_CATEGORIES } from "@/lib/demo/operations-status";
 
 export default function OperationsActivitiesPage() {
   return (
-    <section className="mx-auto max-w-4xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Activity timeline"
         description="Demonstration custody and operational events. Not live scanner or telemetry feeds."

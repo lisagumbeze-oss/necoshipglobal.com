@@ -13,7 +13,7 @@ export default function CorporateCostCentresPage() {
   const shipments = scopeByOrganization(demoCorporateShipments);
 
   return (
-    <section className="mx-auto max-w-6xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Cost centres"
         description="Demonstration cost-centre structure for the sample organization. Expenditure and budgets are synthetic."

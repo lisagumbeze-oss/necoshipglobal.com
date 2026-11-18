@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { Button, Card } from "@/components/design-system/ui";
+import { Card, ButtonLink } from "@/components/design-system/ui";
 
 type Props = {
   searchParams: Record<string, string | string[] | undefined>;
@@ -45,26 +44,20 @@ export default function BookingConfirmationPage({ searchParams }: Props) {
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <Link href={tracking ? (`/tracking?id=${encodeURIComponent(tracking)}` as never) : ("/tracking" as never)}>
-              <Button type="button">Track Shipment</Button>
-            </Link>
+            <ButtonLink href={tracking ? `/tracking?id=${encodeURIComponent(tracking)}` : "/tracking"}>
+              Track Shipment
+            </ButtonLink>
             {recipientToken ? (
-              <Link href={`/recipient/${recipientToken}` as never}>
-                <Button variant="secondary" type="button">
-                  Recipient portal
-                </Button>
-              </Link>
+              <ButtonLink href={`/recipient/${recipientToken}`} variant="secondary">
+                Recipient portal
+              </ButtonLink>
             ) : null}
-            <Link href={"/register" as never}>
-              <Button variant="secondary" type="button">
-                Create account to claim
-              </Button>
-            </Link>
-            <Link href={"/dashboard" as never}>
-              <Button variant="ghost" type="button">
-                Open Dashboard
-              </Button>
-            </Link>
+            <ButtonLink href="/register" variant="secondary">
+              Create account to claim
+            </ButtonLink>
+            <ButtonLink href="/dashboard" variant="ghost">
+              Open Dashboard
+            </ButtonLink>
           </div>
         </Card>
       </section>

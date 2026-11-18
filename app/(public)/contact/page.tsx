@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Button, Card, Input } from "@/components/design-system/ui";
+import { Button, Card, Input, ButtonLink } from "@/components/design-system/ui";
 import { BRAND } from "@/lib/brand";
 import { Mail } from "lucide-react";
 
@@ -56,8 +56,8 @@ function ContactContent() {
 
   if (submitted) {
     return (
-      <main className="min-h-screen bg-brand-surface px-4 py-10 md:px-8">
-        <div className="mx-auto max-w-3xl">
+      <main className="bg-brand-surface">
+        <div className="ns-container max-w-ns-md py-10 md:py-14">
           <Card className="space-y-4">
             <h1 className="font-display text-3xl font-bold text-brand-navy">Message saved locally</h1>
             <p className="text-sm text-slate-600">
@@ -72,9 +72,7 @@ function ContactContent() {
               <Button type="button" onClick={() => setSubmitted(false)}>
                 Send another message
               </Button>
-              <Link href="/support">
-                <Button variant="secondary">Customer support</Button>
-              </Link>
+              <ButtonLink href="/support" variant="secondary">Customer support</ButtonLink>
             </div>
           </Card>
         </div>
@@ -83,11 +81,12 @@ function ContactContent() {
   }
 
   return (
-    <main className="min-h-screen bg-brand-surface px-4 py-10 md:px-8">
-      <div className="mx-auto max-w-7xl space-y-8">
+    <main className="bg-brand-surface">
+      <div className="ns-container max-w-ns-xl space-y-8 py-10 md:py-14">
         <header className="max-w-3xl">
-          <h1 className="font-display text-4xl font-bold text-brand-navy">Contact</h1>
-          <p className="mt-2 text-slate-600">
+          <p className="ns-meta font-semibold uppercase tracking-[0.16em] text-brand-navy">Contact</p>
+          <h1 className="ns-page-title mt-2">Contact</h1>
+          <p className="ns-body mt-2 text-base">
             Reach {BRAND.name} for quotations, tracking questions, documentation support or corporate shipping
             programmes.
           </p>
@@ -164,9 +163,7 @@ function ContactContent() {
                 For negotiated rates and commercial contracts, select “Corporate shipping / sales” in the form or email
                 us with your lane requirements.
               </p>
-              <Link href="/quote">
-                <Button variant="secondary">Also request a quotation</Button>
-              </Link>
+              <ButtonLink href="/quote" variant="secondary">Also request a quotation</ButtonLink>
             </Card>
             <Card className="space-y-2 text-sm text-slate-600">
               <p className="font-semibold text-brand-navy">Helpful links</p>

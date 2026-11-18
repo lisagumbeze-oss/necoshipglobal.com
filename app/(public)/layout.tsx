@@ -48,15 +48,15 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
     <div className="min-h-screen bg-brand-surface">
       <SiteHeader />
 
-      {children}
+      <div className="min-w-0">{children}</div>
 
       <footer className="border-t border-slate-800 bg-brand-navy text-slate-200">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 md:grid-cols-2 lg:grid-cols-6">
+        <div className="ns-container grid max-w-ns-xl gap-8 py-12 md:grid-cols-2 lg:grid-cols-6">
           <div className="space-y-3 lg:col-span-2">
             <BrandLogo variant="lockup-on-dark" size="md" />
             <p className="text-sm text-slate-300">{BRAND.tagline}</p>
             <p className="text-sm text-slate-300">
-              <a href={`mailto:${BRAND.supportEmail}`} className="hover:text-white">
+              <a href={`mailto:${BRAND.supportEmail}`} className="focus-ring rounded-sm hover:text-white">
                 {BRAND.supportEmail}
               </a>
             </p>
@@ -68,7 +68,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
               <ul className="space-y-2 text-sm text-slate-300">
                 {column.links.map((link) => (
                   <li key={link.href}>
-                    <Link href={link.href as never} className="hover:text-white">
+                    <Link href={link.href as never} className="focus-ring rounded-sm hover:text-white">
                       {link.label}
                     </Link>
                   </li>
@@ -78,7 +78,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
           ))}
         </div>
         <div className="border-t border-white/10">
-          <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+          <div className="ns-container flex max-w-ns-xl flex-col gap-2 py-4 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
             <p>
               © {new Date().getFullYear()} {BRAND.officialName}. All rights reserved.
             </p>

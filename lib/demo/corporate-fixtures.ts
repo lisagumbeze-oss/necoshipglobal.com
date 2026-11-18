@@ -688,6 +688,7 @@ export function getCorporateOverviewStats() {
     const set = Array.isArray(status) ? status : [status];
     return rows.filter((r) => set.includes(r.status)).length;
   };
+  const centres = scopeByOrganization(demoCostCentres);
   return {
     total: rows.length,
     inTransit: count(["IN_TRANSIT", "CUSTOMS_PROCESSING", "OUT_FOR_DELIVERY", "PROCESSING", "COLLECTED"]),
@@ -703,6 +704,168 @@ export function getCorporateOverviewStats() {
     inTransitExact: count("IN_TRANSIT"),
     customs: count("CUSTOMS_PROCESSING"),
     outForDelivery: count("OUT_FOR_DELIVERY"),
-    exceptions: count("EXCEPTION")
+    exceptions: count("EXCEPTION"),
+    activeCostCentres: centres.filter((c) => c.status === "Active").length,
+    approvedRateCards: scopeByOrganization(demoNegotiatedRates).filter((r) => r.approvalStatus === "Approved")
+      .length,
+    pendingRateReviews: scopeByOrganization(demoNegotiatedRates).filter((r) => r.approvalStatus === "Pending Review")
+      .length
   };
+}
+
+/** UI-50 — synthetic rate revision / approval timeline. Not live commercial workflow. */
+export type DemoRateRevision = {
+  id: string;
+  organizationId: string;
+  rateCardId: string;
+  rateCardName: string;
+  revisionLabel: string;
+  status: "Draft" | "Pending Review" | "Approved" | "Rejected" | "Expired";
+  effectiveFrom: string;
+  effectiveTo: string | null;
+  requestedBy: string;
+  reviewedBy: string | null;
+  summary: string;
+  timeline: Array<{
+    id: string;
+    title: string;
+    at: string;
+    detail: string;
+  }>;
+};
+
+export const demoRateRevisions: DemoRateRevision[] = [
+  {
+    id: "rr1",
+    organizationId: demoOrganization.id,
+    rateCardId: "nr3",
+    rateCardName: "Demo Domestic Road",
+    revisionLabel: "REV-DEMO-2026-11",
+    status: "Pending Review",
+    effectiveFrom: "2026-12-01",
+    effectiveTo: null,
+    requestedBy: "Marcus Chen (SHIPPER — demo)",
+    reviewedBy: null,
+    summary: "Demonstration request to refresh domestic road weight bands. Not a live tariff change.",
+    timeline: [
+      {
+        id: "rr1a",
+        title: "Draft created",
+        at: "2026-11-10T09:00:00.000Z",
+        detail: "Sample draft prepared in corporate rate workspace."
+      },
+      {
+        id: "rr1b",
+        title: "Submitted for review",
+        at: "2026-11-12T14:30:00.000Z",
+        detail: "Awaiting NECO commercial confirmation — approval actions are disabled in this UI."
+      }
+    ]
+  },
+  {
+    id: "rr2",
+    organizationId: demoOrganization.id,
+    rateCardId: "nr1",
+    rateCardName: "Demo GB–EU Express Air",
+    revisionLabel: "REV-DEMO-2026-01",
+    status: "Approved",
+    effectiveFrom: "2026-01-01",
+    effectiveTo: "2026-12-31",
+    requestedBy: "Alex Morgan (ORG_ADMIN — demo)",
+    reviewedBy: "NECO Commercial (demo contact)",
+    summary: "Historical demonstration approval for the sample air rate card.",
+    timeline: [
+      {
+        id: "rr2a",
+        title: "Draft created",
+        at: "2025-12-01T10:00:00.000Z",
+        detail: "Sample revision drafted for UI history."
+      },
+      {
+        id: "rr2b",
+        title: "Pending review",
+        at: "2025-12-08T11:00:00.000Z",
+        detail: "Demonstration review state."
+      },
+      {
+        id: "rr2c",
+        title: "Approved",
+        at: "2025-12-15T16:00:00.000Z",
+        detail: "Marked approved for demonstration history only — not a live commercial decision."
+      }
+    ]
+  },
+  {
+    id: "rr3",
+    organizationId: demoOrganization.id,
+    rateCardId: "nr2",
+    rateCardName: "Demo GB–EU Ocean LCL",
+    revisionLabel: "REV-DEMO-2025-06",
+    status: "Expired",
+    effectiveFrom: "2025-01-01",
+    effectiveTo: "2025-12-31",
+    requestedBy: "Priya Shah (BILLING — demo)",
+    reviewedBy: "NECO Commercial (demo contact)",
+    summary: "Expired demonstration schedule retained for history layout only.",
+    timeline: [
+      {
+        id: "rr3a",
+        title: "Approved (historical)",
+        at: "2024-12-20T12:00:00.000Z",
+        detail: "Sample historical approval."
+      },
+      {
+        id: "rr3b",
+        title: "Expired",
+        at: "2025-12-31T23:59:00.000Z",
+        detail: "Validity window closed — demonstration record."
+      }
+    ]
+  }
+];
+
+/**
+ * Presentation-only nav affinity for corporate UI roles.
+ * Not authorization — server org membership and APIs remain authoritative.
+ */
+export const CORPORATE_ROLE_NAV: Record<
+  CorporateUiRole,
+  { primary: string[]; note: string }
+> = {
+  ORG_ADMIN: {
+    primary: ["overview", "shipments", "rates", "contracts", "employees", "organization", "settings", "reports"],
+    note: "Organization Administrator — full corporate overview presentation."
+  },
+  SHIPPER: {
+    primary: ["overview", "shipments", "create", "bulk", "quotations", "rates", "cost-centres"],
+    note: "Shipment Manager — operations and quotation focus."
+  },
+  BILLING: {
+    primary: ["overview", "invoices", "statements", "credit", "contracts", "rates", "reports"],
+    note: "Billing Manager — commercial and financial presentation."
+  },
+  VIEWER: {
+    primary: ["overview", "shipments", "quotations", "invoices", "reports"],
+    note: "Viewer — read-only presentation. Mutations remain demo-disabled."
+  }
+};
+
+/** Fixed demo session persona for UI presentation (not signed-in auth). */
+export const demoCorporateSession = {
+  organizationId: demoOrganization.id,
+  employeeId: "emp1",
+  role: "ORG_ADMIN" as CorporateUiRole,
+  displayName: "Alex Morgan"
+};
+
+export function getDemoCorporateSession() {
+  return demoCorporateSession;
+}
+
+export function revisionTone(status: DemoRateRevision["status"]): "default" | "success" | "warning" | "danger" | "info" {
+  if (status === "Approved") return "success";
+  if (status === "Pending Review" || status === "Draft") return "warning";
+  if (status === "Rejected") return "danger";
+  if (status === "Expired") return "default";
+  return "info";
 }

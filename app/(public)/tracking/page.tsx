@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Badge, Button, Card, Input } from "@/components/design-system/ui";
+import { Badge, Button, Card, Input, ButtonLink } from "@/components/design-system/ui";
 import { AlertCircle, Loader2, MapPin, Package, Search } from "lucide-react";
 import { useQuery } from "react-query";
 import { BRAND } from "@/lib/brand";
@@ -104,16 +104,17 @@ function TrackingContent() {
   };
 
   return (
-    <main className="min-h-screen bg-brand-surface px-4 py-8 md:px-8">
-      <section className="mx-auto max-w-6xl space-y-6">
-        <header className="space-y-2 text-center">
-          <h1 className="font-display text-4xl font-bold text-brand-navy">Track Your Shipment</h1>
-          <p className="text-slate-600">
+    <main className="bg-brand-surface">
+      <section className="ns-container max-w-ns-xl space-y-6 py-10 md:py-14">
+        <header className="mx-auto max-w-2xl space-y-2 text-center">
+          <p className="ns-meta font-semibold uppercase tracking-[0.16em] text-brand-navy">Tracking</p>
+          <h1 className="ns-page-title">Track Your Shipment</h1>
+          <p className="ns-body text-base">
             Look up booking status, locations and timeline events when shipment records are available in {BRAND.name}.
           </p>
         </header>
 
-        <Card className="mx-auto max-w-3xl space-y-3">
+        <Card className="mx-auto max-w-3xl space-y-3 shadow-card">
           <div className="flex flex-col gap-3 md:flex-row">
             <div className="relative flex-1">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden />
@@ -221,12 +222,8 @@ function TrackingContent() {
                 <p className="font-semibold text-brand-navy">Need help?</p>
                 <p>If status looks incomplete, contact support with your tracking number.</p>
                 <div className="flex flex-wrap gap-2">
-                  <Link href="/support">
-                    <Button variant="secondary">Customer support</Button>
-                  </Link>
-                  <Link href="/quote">
-                    <Button>Get a Quote</Button>
-                  </Link>
+                  <ButtonLink href="/support" variant="secondary">Customer support</ButtonLink>
+                  <ButtonLink href="/quote">Get a Quote</ButtonLink>
                 </div>
                 {primary.recipientToken ? (
                   <Link href={`/recipient/${primary.recipientToken}` as never} className="block text-brand-navy underline">
@@ -248,12 +245,8 @@ function TrackingContent() {
                 contact support.
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
-                <Link href="/support">
-                  <Button variant="secondary">Customer support</Button>
-                </Link>
-                <Link href="/quote">
-                  <Button>Request a quotation</Button>
-                </Link>
+                <ButtonLink href="/support" variant="secondary">Customer support</ButtonLink>
+                <ButtonLink href="/quote">Request a quotation</ButtonLink>
               </div>
             </div>
           </Card>

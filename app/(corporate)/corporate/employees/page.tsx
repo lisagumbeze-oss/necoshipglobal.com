@@ -11,7 +11,7 @@ export default function CorporateEmployeesPage() {
   const employees = scopeByOrganization(demoEmployees);
 
   return (
-    <section className="mx-auto max-w-5xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Employee directory"
         description="Demonstration organization members and UI role labels mapped to Prisma OrgMemberRole. Permissions cannot be changed here."

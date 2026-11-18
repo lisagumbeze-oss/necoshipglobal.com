@@ -40,7 +40,7 @@ export default function DocumentsPage() {
     return apiQuery<DocumentRecord[]>(`/api/documents${qs ? `?${qs}` : ""}`);
   });
 
-  const docs = docsQuery.data ?? [];
+  const docs = useMemo(() => docsQuery.data ?? [], [docsQuery.data]);
 
   const selectedCount = selected.size;
   const allSelected = selectedCount > 0 && selectedCount === docs.length;

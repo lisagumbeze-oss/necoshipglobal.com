@@ -25,10 +25,10 @@ function iconForTone(tone: ToastTone) {
 }
 
 function toneClasses(tone: ToastTone) {
-  if (tone === "success") return "border-emerald-200 bg-emerald-50 text-emerald-900";
-  if (tone === "error") return "border-red-200 bg-red-50 text-red-900";
-  if (tone === "warning") return "border-amber-200 bg-amber-50 text-amber-900";
-  return "border-yellow-200 bg-yellow-50 text-brand-navy";
+  if (tone === "success") return "border-brand-success/20 bg-ns-successSoft text-brand-success";
+  if (tone === "error") return "border-brand-danger/20 bg-ns-dangerSoft text-brand-danger";
+  if (tone === "warning") return "border-brand-warning/20 bg-ns-warningSoft text-brand-warning";
+  return "border-brand-yellow/40 bg-brand-yellow-soft text-brand-navy";
 }
 
 export function ToastProvider({ children }: { children: React.ReactNode }) {
@@ -57,7 +57,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           return (
             <div
               key={toast.id}
-              className={`pointer-events-auto rounded-card border p-3 shadow-layered ${toneClasses(toast.tone)}`}
+              className={`pointer-events-auto rounded-card border p-3 shadow-overlay ${toneClasses(toast.tone)}`}
               role="status"
               aria-live="polite"
             >

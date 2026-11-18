@@ -2,22 +2,32 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Button, Card, Input } from "@/components/design-system/ui";
+import {
+  Button,
+  DataTable,
+  DateField,
+  FilterBar,
+  FormField,
+  Pagination,
+  SearchField,
+  Select
+} from "@/components/design-system";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { ShipmentStatusBadge } from "@/components/dashboard/status-badge";
-import { demoShipments, type DemoShipment } from "@/lib/demo/customer-fixtures";
+import { DEMO_DATA_NOTICE, demoShipments, type DemoShipment } from "@/lib/demo/customer-fixtures";
 import { SHIPMENT_STATUSES } from "@/lib/demo/shipment-status";
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 8;
 
 export default function MyShipmentsPage() {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("ALL");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
-  const [sort, setSort] = useState<"bookingDate" | "trackingNumber" | "status">("bookingDate");
-  const [page, setPage] = useState(0);
+  const [sortColumn, setSortColumn] = useState<string>("bookingDate");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [page, setPage] = useState(1);
 
   const filtered = useMemo(() => {
     let rows = [...demoShipments];
@@ -34,22 +44,34 @@ export default function MyShipmentsPage() {
     if (status !== "ALL") rows = rows.filter((s) => s.status === status);
     if (from) rows = rows.filter((s) => s.bookingDate.slice(0, 10) >= from);
     if (to) rows = rows.filter((s) => s.bookingDate.slice(0, 10) <= to);
+
     rows.sort((a, b) => {
-      if (sort === "trackingNumber") return a.trackingNumber.localeCompare(b.trackingNumber);
-      if (sort === "status") return a.status.localeCompare(b.status);
-      return b.bookingDate.localeCompare(a.bookingDate);
+      const dir = sortDirection === "asc" ? 1 : -1;
+      if (sortColumn === "trackingNumber") return a.trackingNumber.localeCompare(b.trackingNumber) * dir;
+      if (sortColumn === "status") return a.status.localeCompare(b.status) * dir;
+      if (sortColumn === "origin") return a.origin.localeCompare(b.origin) * dir;
+      return a.bookingDate.localeCompare(b.bookingDate) * dir;
     });
     return rows;
-  }, [q, status, from, to, sort]);
+  }, [q, status, from, to, sortColumn, sortDirection]);
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const pageRows = filtered.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  const pageRows = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const onSort = (columnId: string) => {
+    if (sortColumn === columnId) {
+      setSortDirection((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSortColumn(columnId);
+      setSortDirection("asc");
+    }
+  };
 
   return (
-    <section className="mx-auto max-w-6xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="My Shipments"
-        description="Search, filter and open demonstration shipment records."
+        description="Search and filter demonstration shipment records. UI-08 table hierarchy with NECO branding."
         actions={
           <Link href={"/create-shipment" as never}>
             <Button>New Shipment</Button>
@@ -57,45 +79,58 @@ export default function MyShipmentsPage() {
         }
       />
 
-      <Card className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
-        <Input
-          placeholder="Search tracking, reference, lane…"
-          value={q}
-          onChange={(e) => {
-            setPage(0);
-            setQ(e.target.value);
-          }}
-          aria-label="Search shipments"
-        />
-        <select
-          className="focus-ring h-11 rounded-input border border-slate-300 bg-white px-3 text-sm"
-          value={status}
-          onChange={(e) => {
-            setPage(0);
-            setStatus(e.target.value);
-          }}
-          aria-label="Status filter"
-        >
-          <option value="ALL">All statuses</option>
-          {SHIPMENT_STATUSES.map((s) => (
-            <option key={s} value={s}>
-              {s.replaceAll("_", " ")}
-            </option>
-          ))}
-        </select>
-        <Input type="date" value={from} onChange={(e) => { setPage(0); setFrom(e.target.value); }} aria-label="From date" />
-        <Input type="date" value={to} onChange={(e) => { setPage(0); setTo(e.target.value); }} aria-label="To date" />
-        <select
-          className="focus-ring h-11 rounded-input border border-slate-300 bg-white px-3 text-sm"
-          value={sort}
-          onChange={(e) => setSort(e.target.value as typeof sort)}
-          aria-label="Sort shipments"
-        >
-          <option value="bookingDate">Sort: booking date</option>
-          <option value="trackingNumber">Sort: tracking number</option>
-          <option value="status">Sort: status</option>
-        </select>
-      </Card>
+      <p className="rounded-input border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">{DEMO_DATA_NOTICE}</p>
+
+      <FilterBar>
+        <FormField label="Search" htmlFor="shipments-q" className="min-w-[14rem] flex-1">
+          <SearchField
+            id="shipments-q"
+            placeholder="Tracking, reference, lane…"
+            value={q}
+            onChange={(e) => {
+              setPage(1);
+              setQ(e.target.value);
+            }}
+          />
+        </FormField>
+        <FormField label="Status" htmlFor="shipments-status" className="min-w-[11rem]">
+          <Select
+            id="shipments-status"
+            value={status}
+            onChange={(e) => {
+              setPage(1);
+              setStatus(e.target.value);
+            }}
+          >
+            <option value="ALL">All statuses</option>
+            {SHIPMENT_STATUSES.map((s) => (
+              <option key={s} value={s}>
+                {s.replaceAll("_", " ")}
+              </option>
+            ))}
+          </Select>
+        </FormField>
+        <FormField label="From" htmlFor="shipments-from" className="min-w-[10rem]">
+          <DateField
+            id="shipments-from"
+            value={from}
+            onChange={(e) => {
+              setPage(1);
+              setFrom(e.target.value);
+            }}
+          />
+        </FormField>
+        <FormField label="To" htmlFor="shipments-to" className="min-w-[10rem]">
+          <DateField
+            id="shipments-to"
+            value={to}
+            onChange={(e) => {
+              setPage(1);
+              setTo(e.target.value);
+            }}
+          />
+        </FormField>
+      </FilterBar>
 
       {pageRows.length === 0 ? (
         <EmptyState
@@ -108,73 +143,71 @@ export default function MyShipmentsPage() {
           }
         />
       ) : (
-        <Card className="overflow-x-auto p-0">
-          <table className="min-w-full text-left text-sm">
-            <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-              <tr>
-                <th className="px-4 py-3">Tracking Number</th>
-                <th className="px-4 py-3">Reference</th>
-                <th className="px-4 py-3">Origin</th>
-                <th className="px-4 py-3">Destination</th>
-                <th className="px-4 py-3">Method</th>
-                <th className="px-4 py-3">Booking Date</th>
-                <th className="px-4 py-3">Est. Delivery</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pageRows.map((s) => (
-                <ShipmentRow key={s.id} shipment={s} />
-              ))}
-            </tbody>
-          </table>
-        </Card>
+        <>
+          <DataTable<DemoShipment>
+            rows={pageRows}
+            rowKey={(row) => row.id}
+            sortColumn={sortColumn}
+            sortDirection={sortDirection}
+            onSort={onSort}
+            columns={[
+              {
+                id: "trackingNumber",
+                header: "Tracking",
+                sortable: true,
+                cell: (s) => (
+                  <Link
+                    href={`/shipments/${s.trackingNumber}` as never}
+                    className="font-mono text-xs font-semibold text-brand-navy hover:underline"
+                  >
+                    {s.trackingNumber}
+                  </Link>
+                )
+              },
+              { id: "reference", header: "Reference", cell: (s) => s.reference },
+              {
+                id: "origin",
+                header: "Origin",
+                sortable: true,
+                cell: (s) => s.origin
+              },
+              { id: "destination", header: "Destination", cell: (s) => s.destination },
+              {
+                id: "bookingDate",
+                header: "Booked",
+                sortable: true,
+                cell: (s) => new Date(s.bookingDate).toLocaleDateString()
+              },
+              {
+                id: "status",
+                header: "Status",
+                sortable: true,
+                cell: (s) => <ShipmentStatusBadge status={s.status} />
+              },
+              {
+                id: "actions",
+                header: "Actions",
+                headerClassName: "text-right",
+                className: "text-right",
+                cell: (s) => (
+                  <Link
+                    href={`/shipments/${s.trackingNumber}` as never}
+                    className="font-semibold text-brand-navy hover:underline"
+                  >
+                    View
+                  </Link>
+                )
+              }
+            ]}
+          />
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            onPageChange={setPage}
+            summary={`Showing ${pageRows.length} of ${filtered.length} demonstration records`}
+          />
+        </>
       )}
-
-      <div className="flex items-center justify-between gap-3 text-sm text-slate-600">
-        <p>
-          Showing {pageRows.length} of {filtered.length} demonstration records
-        </p>
-        <div className="flex gap-2">
-          <Button variant="ghost" type="button" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>
-            Previous
-          </Button>
-          <span className="px-2 py-2">
-            Page {page + 1} / {pageCount}
-          </span>
-          <Button
-            variant="ghost"
-            type="button"
-            disabled={page + 1 >= pageCount}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Next
-          </Button>
-        </div>
-      </div>
     </section>
-  );
-}
-
-function ShipmentRow({ shipment: s }: { shipment: DemoShipment }) {
-  return (
-    <tr className="border-b border-slate-100 last:border-0">
-      <td className="px-4 py-3 font-mono text-xs font-semibold text-brand-navy">{s.trackingNumber}</td>
-      <td className="px-4 py-3">{s.reference}</td>
-      <td className="px-4 py-3">{s.origin}</td>
-      <td className="px-4 py-3">{s.destination}</td>
-      <td className="px-4 py-3">{s.method}</td>
-      <td className="px-4 py-3">{new Date(s.bookingDate).toLocaleDateString()}</td>
-      <td className="px-4 py-3">{s.estimatedDelivery ? new Date(s.estimatedDelivery).toLocaleDateString() : "—"}</td>
-      <td className="px-4 py-3">
-        <ShipmentStatusBadge status={s.status} />
-      </td>
-      <td className="px-4 py-3">
-        <Link href={`/shipments/${s.trackingNumber}` as never} className="font-semibold text-brand-navy hover:underline">
-          View
-        </Link>
-      </td>
-    </tr>
   );
 }

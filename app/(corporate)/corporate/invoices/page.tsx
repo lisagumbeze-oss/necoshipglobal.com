@@ -19,7 +19,7 @@ export default function CorporateInvoicesPage() {
   }, [filter]);
 
   return (
-    <section className="mx-auto max-w-6xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Corporate invoicing"
         description="Credit billing for the demonstration organization. Distinct from individual prepaid customer payments. No real financial records."

@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, Card, Input } from "@/components/design-system/ui";
+import { Button, Card, Input, ButtonLink } from "@/components/design-system/ui";
 import { BRAND } from "@/lib/brand";
 import { SHIPPING_METHODS } from "@/lib/public-content";
 
@@ -95,8 +95,8 @@ export default function QuotePage() {
 
   if (submitted) {
     return (
-      <main className="min-h-screen bg-brand-surface px-4 py-10 md:px-8">
-        <section className="mx-auto max-w-3xl">
+      <main className="bg-brand-surface">
+        <section className="ns-container max-w-ns-md py-10 md:py-14">
           <Card className="space-y-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-brand-yellow">Demonstration request</p>
             <h1 className="font-display text-3xl font-bold text-brand-navy">Quotation request received</h1>
@@ -115,12 +115,8 @@ export default function QuotePage() {
               <p className="mt-1">Preferred method: {methodLabel}</p>
             </div>
             <div className="flex flex-wrap gap-3">
-              <Link href="/tracking">
-                <Button variant="secondary">Track a shipment</Button>
-              </Link>
-              <Link href={"/contact?topic=corporate" as never}>
-                <Button>Contact sales</Button>
-              </Link>
+              <ButtonLink href="/tracking" variant="secondary">Track a shipment</ButtonLink>
+              <ButtonLink href="/contact?topic=corporate">Contact sales</ButtonLink>
               <Button
                 variant="ghost"
                 type="button"
@@ -140,11 +136,12 @@ export default function QuotePage() {
   }
 
   return (
-    <main className="min-h-screen bg-brand-surface px-4 py-8 md:px-8">
-      <section className="mx-auto max-w-4xl space-y-5">
+    <main className="bg-brand-surface">
+      <section className="ns-container max-w-ns-lg space-y-5 py-10 md:py-14">
         <header>
-          <h1 className="font-display text-3xl font-bold text-brand-navy">Get a Quote</h1>
-          <p className="mt-1 text-sm text-slate-600">
+          <p className="ns-meta font-semibold uppercase tracking-[0.16em] text-brand-navy">Quotations</p>
+          <h1 className="ns-page-title mt-2">Get a Quote</h1>
+          <p className="ns-body mt-2">
             Progressive quotation request for {BRAND.name}. Final charges are confirmed by our team — not invented on
             this page.
           </p>
@@ -286,11 +283,9 @@ export default function QuotePage() {
                 Back
               </Button>
               <div className="flex flex-wrap gap-2">
-                <Link href={"/contact?topic=corporate" as never}>
-                  <Button variant="secondary" type="button">
+                <ButtonLink href="/contact?topic=corporate" variant="secondary">
                     Contact sales
-                  </Button>
-                </Link>
+                  </ButtonLink>
                 <Button type="button" onClick={() => void submitRequest()}>
                   Submit quotation request
                 </Button>

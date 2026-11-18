@@ -20,7 +20,7 @@ export default function CorporateContractDetailPage({ params }: { params: { cont
   }
 
   return (
-    <section className="mx-auto max-w-4xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title={contract.reference}
         description={contract.title}

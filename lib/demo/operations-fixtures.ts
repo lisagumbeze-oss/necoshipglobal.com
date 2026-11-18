@@ -976,6 +976,17 @@ export function getOpsOverviewStats() {
     const set = Array.isArray(phase) ? phase : [phase];
     return demoOpsShipments.filter((s) => set.includes(s.phase)).length;
   };
+  const openExceptions = demoExceptions.filter((e) => !["RESOLVED", "CLOSED"].includes(e.status)).length;
+  const vehiclesAvailable = demoVehicles.filter((v) => v.status === "AVAILABLE").length;
+  const vehiclesAssigned = demoVehicles.filter((v) => v.status === "ASSIGNED" || v.status === "ON_ROUTE").length;
+  const manifestsReady = demoManifests.filter((m) => m.status === "READY").length;
+  const manifestsDeparted = demoManifests.filter((m) => m.status === "DEPARTED").length;
+  const warehouseAwaiting = demoWarehouses.reduce((n, w) => n + w.awaitingProcessing + w.awaitingDispatch, 0);
+  const loadedPackages = demoParcelCustody.filter((p) => p.custody === "LOADED").length;
+  const stagingPackages = demoParcelCustody.filter((p) =>
+    ["READY_FOR_DISPATCH", "SORTED", "STORED", "PROCESSING"].includes(p.custody)
+  ).length;
+  const maintenanceDue = demoMaintenance.filter((m) => m.status !== "Completed").length;
   return {
     total: demoOpsShipments.length,
     awaitingCollection: count("AWAITING_COLLECTION"),
@@ -988,7 +999,19 @@ export function getOpsOverviewStats() {
     outForDelivery: count("OUT_FOR_DELIVERY"),
     delivered: count("DELIVERED"),
     delayed: count("DELAYED"),
-    exceptions: count("EXCEPTION")
+    exceptions: count("EXCEPTION"),
+    openExceptionCases: openExceptions,
+    vehiclesAvailable,
+    vehiclesAssigned,
+    vehiclesTotal: demoVehicles.length,
+    manifestsReady,
+    manifestsDeparted,
+    warehouseAwaiting,
+    loadedPackages,
+    stagingPackages,
+    maintenanceDue,
+    driversOnDuty: demoDrivers.filter((d) => d.availability === "AVAILABLE" || d.availability === "ON_ASSIGNMENT")
+      .length
   };
 }
 

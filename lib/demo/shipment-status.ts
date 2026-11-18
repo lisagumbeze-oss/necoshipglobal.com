@@ -99,8 +99,8 @@ export function getShipmentStatus(code: string): ShipmentStatusConfig {
 
 export const STATUS_TONE_CLASS: Record<StatusTone, string> = {
   default: "bg-slate-100 text-slate-700",
-  info: "bg-sky-100 text-sky-800",
-  success: "bg-emerald-100 text-emerald-800",
-  warning: "bg-amber-100 text-amber-900",
-  danger: "bg-red-100 text-red-800"
+  info: "bg-ns-infoSoft text-brand-info",
+  success: "bg-ns-successSoft text-brand-success",
+  warning: "bg-ns-warningSoft text-brand-warning",
+  danger: "bg-ns-dangerSoft text-brand-danger"
 };

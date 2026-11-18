@@ -16,7 +16,7 @@ export default function OperationsExceptionsPage() {
   );
 
   return (
-    <section className="mx-auto max-w-6xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Exception management"
         description="Demonstration operational exceptions. Not real incidents."

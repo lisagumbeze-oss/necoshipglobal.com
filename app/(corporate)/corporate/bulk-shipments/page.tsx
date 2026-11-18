@@ -10,7 +10,7 @@ export default function CorporateBulkShipmentsPage() {
   const [rows, setRows] = useState("PO-1001,London GB,Rotterdam NL,Road,CC-OPS\nPO-1002,Manchester GB,Dublin IE,Air,CC-RTL");
 
   return (
-    <section className="mx-auto max-w-3xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Bulk shipment request"
         description="Upload or paste a demonstration batch for the sample organization. No live dispatch is performed."

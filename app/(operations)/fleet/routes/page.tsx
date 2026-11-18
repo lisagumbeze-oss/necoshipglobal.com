@@ -5,7 +5,7 @@ import { demoDrivers, demoRoutes, demoVehicles } from "@/lib/demo/operations-fix
 
 export default function FleetRoutesPage() {
   return (
-    <section className="mx-auto max-w-5xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Fleet routes"
         description="Map-ready planned and confirmed routes. No fabricated live GPS positions."

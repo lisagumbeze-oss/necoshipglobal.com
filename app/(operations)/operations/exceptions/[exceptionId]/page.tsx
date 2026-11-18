@@ -9,7 +9,7 @@ export default function ExceptionDetailPage({ params }: { params: { exceptionId:
   const ex = getException(params.exceptionId);
   if (!ex) {
     return (
-      <section className="mx-auto max-w-3xl space-y-4">
+      <section className="mx-auto max-w-ns-xl space-y-4">
         <DashboardPageHeader title="Exception not found" description="No demonstration exception matches." />
         <Link href={"/operations/exceptions" as never}>
           <Button variant="secondary">Back</Button>
@@ -19,7 +19,7 @@ export default function ExceptionDetailPage({ params }: { params: { exceptionId:
   }
 
   return (
-    <section className="mx-auto max-w-3xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title={ex.reference}
         description="Demonstration exception detail — not a live operational incident."

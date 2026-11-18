@@ -41,7 +41,7 @@ export default function CorporateReportsPage() {
   );
 
   return (
-    <section className="mx-auto max-w-6xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Corporate analytics"
         description="Demonstration charts for shipment and commercial activity. Not actual NECO financial performance."

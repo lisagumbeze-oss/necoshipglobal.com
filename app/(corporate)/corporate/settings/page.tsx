@@ -11,7 +11,7 @@ export default function CorporateSettingsPage() {
   const [exceptionAlerts, setExceptionAlerts] = useState(true);
 
   return (
-    <section className="mx-auto max-w-3xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Corporate account settings"
         description="Company preferences for the demonstration organization. Visually aligned with the individual customer portal."

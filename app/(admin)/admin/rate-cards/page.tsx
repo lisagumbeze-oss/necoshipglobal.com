@@ -42,7 +42,7 @@ export default function RateCardManagementPage() {
     return apiQuery<RateCardRow[]>(`/api/admin/rate-cards${qs ? `?${qs}` : ""}`);
   });
 
-  const rows = query.data ?? [];
+  const rows = useMemo(() => query.data ?? [], [query.data]);
   const avgFuel = useMemo(() => {
     if (rows.length === 0) return 0;
     return Math.round((rows.reduce((sum, r) => sum + r.fuelSurchargePct, 0) / rows.length) * 10) / 10;

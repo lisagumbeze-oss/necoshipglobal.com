@@ -45,7 +45,7 @@ export default function ExceptionsAlertsPage() {
     const qs = params.toString();
     return apiQuery<ExceptionRecord[]>(`/api/admin/exceptions${qs ? `?${qs}` : ""}`);
   });
-  const rows = query.data ?? [];
+  const rows = useMemo(() => query.data ?? [], [query.data]);
 
   const selectedCount = selected.length;
   const hasSelection = selectedCount > 0;

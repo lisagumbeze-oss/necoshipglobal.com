@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Badge, Button, Card } from "@/components/design-system/ui";
+import { Badge, ButtonLink, Card, buttonVariants } from "@/components/design-system/ui";
 import { PageShell } from "@/components/pages/page-shell";
 
 type OpenApiDoc = {
@@ -30,14 +30,12 @@ export default function DevelopersPage() {
       subtitle="Full OpenAPI 3 specification for NecoShip Global — browse endpoints or download the machine-readable schema."
     >
       <div className="mb-4 flex flex-wrap gap-2">
-        <a href="/openapi.json" download>
-          <Button type="button">Download openapi.json</Button>
+        <a href="/openapi.json" download className={buttonVariants()}>
+          Download openapi.json
         </a>
-        <Link href={"/api-access" as never}>
-          <Button type="button" variant="secondary">
-            Manage API keys
-          </Button>
-        </Link>
+        <ButtonLink href="/api-access" variant="secondary">
+          Manage API keys
+        </ButtonLink>
         <Badge>OpenAPI {spec?.openapi ?? "3.0"}</Badge>
         <Badge>{spec?.info?.version ?? "v1"}</Badge>
       </div>

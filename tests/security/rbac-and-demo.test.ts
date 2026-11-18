@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { hasPermission, isAdminConsoleRole } from "@/lib/rbac";
+import { hasPermission, isAdminConsoleRole, permissionsForRole } from "@/lib/rbac";
+import {
+  ALL_PERMISSIONS,
+  PERSISTED_STAFF_ROLES,
+  roleHasPermission
+} from "@/lib/rbac-matrix";
 import { isBlockedDemoCredential, mapRoleToAppRole } from "@/lib/repository/users";
 import { allowMemoryStore } from "@/lib/runtime";
 
@@ -28,6 +33,18 @@ describe("SEC-T04/T05/T07 demo credentials and roles", () => {
     expect(hasPermission("OPS_MANAGER", "finance.manage")).toBe(false);
     expect(hasPermission("CUSTOMS_OFFICER", "finance.view")).toBe(false);
     expect(hasPermission("ADMIN", "system.configure")).toBe(true);
+  });
+
+  it("keeps UI rbac-matrix aligned with lib/rbac.ts", () => {
+    for (const role of PERSISTED_STAFF_ROLES) {
+      const granted = permissionsForRole(role);
+      for (const permission of ALL_PERMISSIONS) {
+        expect(roleHasPermission(role, permission)).toBe(granted.includes(permission));
+      }
+    }
+    expect(ALL_PERMISSIONS).toContain("finance.manage");
+    expect(ALL_PERMISSIONS).toContain("system.configure");
+    expect(PERSISTED_STAFF_ROLES).not.toContain("SUPER_ADMIN" as never);
   });
 });
 

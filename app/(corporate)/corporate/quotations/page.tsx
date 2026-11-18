@@ -15,14 +15,14 @@ export default function CorporateQuotationsPage() {
   const quotes = scopeByOrganization(demoCorporateQuotes);
 
   return (
-    <section className="mx-auto max-w-5xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Corporate quotations"
         description="Demonstration quote history for the sample organization. Indicative only — not final commercial tariffs."
       />
 
       <Card className="space-y-3">
-        <h2 className="font-semibold text-brand-navy">Request shipping quote</h2>
+        <h2 className="ns-card-title">Request shipping quote</h2>
         <div className="grid gap-3 sm:grid-cols-2">
           <Input placeholder="Origin" aria-label="Quote origin" />
           <Input placeholder="Destination" aria-label="Quote destination" />

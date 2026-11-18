@@ -35,7 +35,7 @@ export default function OperationsShipmentsPage() {
   const rows = filtered.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
 
   return (
-    <section className="mx-auto max-w-6xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Operational shipments"
         description="Demonstration shipment processing board. Partner linehaul may apply for international legs."

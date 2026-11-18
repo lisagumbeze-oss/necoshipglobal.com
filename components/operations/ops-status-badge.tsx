@@ -1,4 +1,5 @@
-import { STATUS_TONE_CLASS, type StatusTone } from "@/lib/demo/shipment-status";
+import type { StatusTone } from "@/lib/demo/shipment-status";
+import { Badge } from "@/components/design-system/ui";
 import { cn } from "@/lib/utils";
 
 export function OpsStatusBadge({
@@ -11,14 +12,8 @@ export function OpsStatusBadge({
   className?: string;
 }) {
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
-        STATUS_TONE_CLASS[tone],
-        className
-      )}
-    >
+    <Badge tone={tone} className={cn(className)}>
       {label}
-    </span>
+    </Badge>
   );
 }

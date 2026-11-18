@@ -9,7 +9,7 @@ export default function OperationsShipmentDetailPage({ params }: { params: { shi
   const shipment = getOpsShipment(params.shipmentId);
   if (!shipment) {
     return (
-      <section className="mx-auto max-w-3xl space-y-4">
+      <section className="mx-auto max-w-ns-xl space-y-4">
         <DashboardPageHeader title="Shipment not found" description="No demonstration operational shipment matches." />
         <Link href={"/operations/shipments" as never}>
           <Button variant="secondary">Back</Button>
@@ -21,7 +21,7 @@ export default function OperationsShipmentDetailPage({ params }: { params: { shi
   const events = demoOpsEvents.filter((e) => e.trackingNumber === shipment.trackingNumber);
 
   return (
-    <section className="mx-auto max-w-4xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title={shipment.trackingNumber}
         description={`Reference ${shipment.reference} · demonstration operational detail`}

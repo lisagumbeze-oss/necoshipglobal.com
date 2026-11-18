@@ -2,8 +2,111 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * NECO Ship Global — Design tokens (UI Phase 1)
+ * Brand: navy #062853 · yellow #F8E000 · neutrals · semantic status colours only
+ */
 :root {
   color-scheme: light;
+
+  /* Brand */
+  --ns-color-navy: #062853;
+  --ns-color-navy-800: #0a3a6e;
+  --ns-color-navy-700: #0f4a8a;
+  --ns-color-yellow: #f8e000;
+  --ns-color-yellow-soft: #fff6a8;
+  --ns-color-charcoal: #1e293b;
+
+  /* Neutrals */
+  --ns-color-white: #ffffff;
+  --ns-color-surface: #f8fafc;
+  --ns-color-surface-muted: #f1f5f9;
+  --ns-color-border: #e2e8f0;
+  --ns-color-border-strong: #cbd5e1;
+  --ns-color-text: #062853;
+  --ns-color-text-muted: #4a5568;
+  --ns-color-text-subtle: #64748b;
+
+  /* Semantic (status only) */
+  --ns-color-success: #059669;
+  --ns-color-success-soft: #d1fae5;
+  --ns-color-warning: #d97706;
+  --ns-color-warning-soft: #fef3c7;
+  --ns-color-danger: #dc2626;
+  --ns-color-danger-soft: #fee2e2;
+  --ns-color-info: #0369a1;
+  --ns-color-info-soft: #e0f2fe;
+
+  /* Typography */
+  --ns-font-display: var(--font-sora), Sora, system-ui, sans-serif;
+  --ns-font-body: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
+  --ns-font-mono: var(--font-jetbrains), "JetBrains Mono", ui-monospace, monospace;
+
+  --ns-text-display: 2.25rem;
+  --ns-text-title: 1.5rem;
+  --ns-text-section: 1.125rem;
+  --ns-text-card: 1rem;
+  --ns-text-body: 0.875rem;
+  --ns-text-meta: 0.75rem;
+  --ns-text-label: 0.8125rem;
+
+  --ns-leading-tight: 1.25;
+  --ns-leading-snug: 1.375;
+  --ns-leading-normal: 1.5;
+
+  --ns-weight-regular: 400;
+  --ns-weight-medium: 500;
+  --ns-weight-semibold: 600;
+  --ns-weight-bold: 700;
+
+  /* Spacing (4px base) */
+  --ns-space-1: 0.25rem;
+  --ns-space-2: 0.5rem;
+  --ns-space-3: 0.75rem;
+  --ns-space-4: 1rem;
+  --ns-space-5: 1.25rem;
+  --ns-space-6: 1.5rem;
+  --ns-space-8: 2rem;
+  --ns-space-10: 2.5rem;
+  --ns-space-12: 3rem;
+
+  /* Radii */
+  --ns-radius-button: 6px;
+  --ns-radius-input: 8px;
+  --ns-radius-badge: 9999px;
+  --ns-radius-card: 12px;
+  --ns-radius-panel: 16px;
+
+  /* Shadows / borders */
+  --ns-shadow-sm: 0 1px 2px rgba(6, 40, 83, 0.06);
+  --ns-shadow-card: 0 10px 30px -12px rgba(6, 40, 83, 0.18), 0 4px 10px -6px rgba(6, 40, 83, 0.08);
+  --ns-shadow-overlay: 0 20px 50px -20px rgba(6, 40, 83, 0.45);
+  --ns-border-width: 1px;
+
+  /* Focus */
+  --ns-focus-ring: 0 0 0 2px var(--ns-color-white), 0 0 0 4px var(--ns-color-yellow);
+
+  /* Layout */
+  --ns-container-sm: 40rem;
+  --ns-container-md: 48rem;
+  --ns-container-lg: 64rem;
+  --ns-container-xl: 80rem;
+  --ns-container-2xl: 90rem;
+
+  /* Breakpoints (documented; Tailwind screens remain source for utilities) */
+  --ns-bp-sm: 640px;
+  --ns-bp-md: 768px;
+  --ns-bp-lg: 1024px;
+  --ns-bp-xl: 1280px;
+  --ns-bp-2xl: 1536px;
+
+  /* Motion */
+  --ns-duration-fast: 120ms;
+  --ns-duration-normal: 200ms;
+  --ns-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* Touch */
+  --ns-touch-min: 44px;
 }
 
 html {
@@ -11,15 +114,70 @@ html {
 }
 
 body {
-  @apply bg-brand-surface text-brand-navy font-body;
+  @apply bg-brand-surface text-brand-navy font-body antialiased;
+  font-size: var(--ns-text-body);
+  line-height: var(--ns-leading-normal);
 }
 
-.surface-card {
-  @apply rounded-card border border-slate-100 bg-white shadow-layered;
-}
+@layer components {
+  .surface-card {
+    @apply rounded-card border border-ns-border bg-white shadow-card;
+  }
 
-.focus-ring {
-  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2;
+  .focus-ring {
+    @apply focus-visible:outline-none;
+  }
+
+  .focus-ring:focus-visible {
+    box-shadow: var(--ns-focus-ring);
+  }
+
+  .ns-container {
+    @apply mx-auto w-full px-4 sm:px-6 lg:px-8;
+    max-width: var(--ns-container-xl);
+  }
+
+  .ns-container-narrow {
+    @apply mx-auto w-full px-4 sm:px-6;
+    max-width: var(--ns-container-md);
+  }
+
+  .ns-page-title {
+    @apply font-display font-bold text-brand-navy;
+    font-size: clamp(1.5rem, 1.2rem + 1vw, var(--ns-text-display));
+    line-height: var(--ns-leading-tight);
+  }
+
+  .ns-section-title {
+    @apply font-display font-semibold text-brand-navy;
+    font-size: var(--ns-text-section);
+    line-height: var(--ns-leading-snug);
+  }
+
+  .ns-card-title {
+    @apply font-semibold text-brand-navy;
+    font-size: var(--ns-text-card);
+  }
+
+  .ns-table-heading {
+    @apply font-semibold uppercase tracking-wide text-slate-500;
+    font-size: 0.6875rem;
+  }
+
+  .ns-body {
+    @apply text-brand-slate;
+    font-size: var(--ns-text-body);
+  }
+
+  .ns-meta {
+    @apply text-slate-500;
+    font-size: var(--ns-text-meta);
+  }
+
+  .ns-label {
+    @apply font-medium text-brand-navy;
+    font-size: var(--ns-text-label);
+  }
 }
 
 @keyframes route-dash {
@@ -30,4 +188,10 @@ body {
 
 .animate-route-dash {
   animation: route-dash 18s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-route-dash {
+    animation: none;
+  }
 }

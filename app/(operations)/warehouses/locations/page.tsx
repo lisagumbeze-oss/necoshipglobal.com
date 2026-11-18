@@ -4,7 +4,7 @@ import { demoWarehouseBins, demoWarehouses } from "@/lib/demo/operations-fixture
 
 export default function WarehouseLocationsPage() {
   return (
-    <section className="mx-auto max-w-6xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Warehouse facilities"
         description="Parcel custody facilities. InventoryItem SKU model exists in Prisma; this UI prioritizes package custody over retail stock."

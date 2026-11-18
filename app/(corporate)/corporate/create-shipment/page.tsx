@@ -10,7 +10,7 @@ export default function CorporateCreateShipmentPage() {
   const [costCentre, setCostCentre] = useState(demoCostCentres[0]?.code ?? "");
 
   return (
-    <section className="mx-auto max-w-3xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title="Create corporate shipment"
         description="Capture a demonstration booking draft for the sample organization. No live booking is created."

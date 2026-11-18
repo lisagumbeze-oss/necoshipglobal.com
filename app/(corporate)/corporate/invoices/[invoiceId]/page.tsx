@@ -22,7 +22,7 @@ export default function CorporateInvoiceDetailPage({ params }: { params: { invoi
   }
 
   return (
-    <section className="mx-auto max-w-3xl space-y-5">
+    <section className="mx-auto max-w-ns-xl space-y-5">
       <DashboardPageHeader
         title={invoice.reference}
         description={`Corporate credit invoice · ${invoice.billingPeriod}`}

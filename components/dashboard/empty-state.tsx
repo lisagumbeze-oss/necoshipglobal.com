@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
-import { Card } from "@/components/design-system/ui";
+import { EmptyState as DesignEmptyState } from "@/components/design-system/feedback";
 
+/** @deprecated Prefer `@/components/design-system` EmptyState. Kept for portal compatibility. */
 export function EmptyState({
   title,
   description,
@@ -10,13 +11,5 @@ export function EmptyState({
   description: string;
   action?: ReactNode;
 }) {
-  return (
-    <Card className="flex flex-col items-start gap-3 border-dashed">
-      <div>
-        <p className="font-semibold text-brand-navy">{title}</p>
-        <p className="mt-1 text-sm text-slate-600">{description}</p>
-      </div>
-      {action}
-    </Card>
-  );
+  return <DesignEmptyState title={title} description={description} action={action} />;
 }
