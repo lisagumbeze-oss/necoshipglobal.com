@@ -1,10 +1,10 @@
-import { jsonOk, requireAdminSession } from "@/lib/api";
+import { jsonOk, requirePermission } from "@/lib/api";
 import { titleStatus } from "@/lib/query-api";
 import { ensureGlobalDemoData } from "@/lib/repository/ensure-demo";
 import { memoryStore } from "@/lib/repository/memory-store";
 
 export async function GET(request: Request) {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("pricing.view");
   if (error) return error;
   ensureGlobalDemoData();
 

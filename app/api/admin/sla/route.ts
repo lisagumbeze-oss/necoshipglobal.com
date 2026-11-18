@@ -1,8 +1,8 @@
-import { jsonOk, requireAdminSession } from "@/lib/api";
+import { jsonOk, requirePermission } from "@/lib/api";
 import { memoryStore } from "@/lib/repository/memory-store";
 
 export async function GET() {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("reporting.view");
   if (error) return error;
   const openTickets = memoryStore.tickets.filter((t) => t.status !== "Resolved" && t.status !== "CLOSED").length;
   return jsonOk({

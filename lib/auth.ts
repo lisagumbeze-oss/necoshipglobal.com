@@ -20,6 +20,8 @@ declare module "next-auth" {
       email?: string | null;
       image?: string | null;
       role: AppRole;
+      /** Trusted persisted Prisma UserRole — never client-supplied. */
+      staffRole?: string | null;
       twoFactorEnabled?: boolean;
     };
   }
@@ -27,6 +29,7 @@ declare module "next-auth" {
   interface User {
     id: string;
     role: AppRole;
+    staffRole?: string | null;
     twoFactorEnabled?: boolean;
   }
 }
@@ -35,6 +38,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     id?: string;
     role?: AppRole;
+    staffRole?: string | null;
     twoFactorEnabled?: boolean;
   }
 }
@@ -85,7 +89,8 @@ export const authOptions: NextAuthOptions = {
           if (!validTotp && !validBackup) return null;
         }
 
-        const role = mapRoleToAppRole(String(user.role));
+        const staffRole = String(user.role);
+        const role = mapRoleToAppRole(staffRole);
         await writeAuditLog({
           userId: user.id,
           action: "auth.login",
@@ -98,6 +103,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           name: user.name,
           role,
+          staffRole,
           twoFactorEnabled: Boolean(user.twoFactorEnabled)
         };
       }
@@ -121,14 +127,39 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.role = user.role;
         token.twoFactorEnabled = user.twoFactorEnabled;
+
+        if (user.staffRole) {
+          token.staffRole = user.staffRole;
+        } else if (user.email) {
+          // Enrich from trusted persisted User.role — never from client claims.
+          try {
+            const existing = await findUserByEmail(user.email);
+            if (existing) {
+              token.id = existing.id;
+              token.staffRole = String(existing.role);
+              token.role = mapRoleToAppRole(String(existing.role));
+            } else {
+              token.staffRole = "CUSTOMER";
+              token.role = token.role === "admin" ? "admin" : "customer";
+            }
+          } catch {
+            // Fail closed: no trusted staff role claim.
+            token.staffRole = null;
+          }
+        } else {
+          // AppRole alone is insufficient for fine-grained permissions.
+          token.staffRole = null;
+        }
       } else if (!token.role && account?.provider === "google") {
         token.role = "customer";
+        token.staffRole = "CUSTOMER";
       }
       return token;
     },
     async session({ session, token }) {
       session.user.id = token.id;
       session.user.role = token.role === "admin" ? "admin" : "customer";
+      session.user.staffRole = token.staffRole ?? null;
       session.user.twoFactorEnabled = token.twoFactorEnabled;
       return session;
     }

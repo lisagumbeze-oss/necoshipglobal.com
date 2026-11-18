@@ -1,9 +1,9 @@
-import { jsonOk, requireAdminSession } from "@/lib/api";
+import { jsonOk, requirePermission } from "@/lib/api";
 import { ensureGlobalDemoData } from "@/lib/repository/ensure-demo";
 import { runCarrierInvoiceReconciliation } from "@/lib/services/reconciliation";
 
 export async function POST() {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("finance.manage");
   if (error) return error;
   ensureGlobalDemoData();
   const results = runCarrierInvoiceReconciliation();

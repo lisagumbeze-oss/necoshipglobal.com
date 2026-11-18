@@ -1,4 +1,4 @@
-import { jsonOk, requireAdminSession } from "@/lib/api";
+import { jsonOk, requirePermission } from "@/lib/api";
 import { ensureGlobalDemoData } from "@/lib/repository/ensure-demo";
 import { memoryStore } from "@/lib/repository/memory-store";
 
@@ -14,7 +14,7 @@ const regionMap: Record<string, "US" | "EU" | "APAC" | "ME"> = {
 };
 
 export async function GET() {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("fleet.view");
   if (error) return error;
   ensureGlobalDemoData();
 

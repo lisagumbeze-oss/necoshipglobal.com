@@ -3,6 +3,8 @@
  * Run: npm run test:security
  */
 import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { isAdminConsoleRole, hasPermission } from "../lib/rbac";
 import { allowMemoryStore, isProductionRuntime } from "../lib/runtime";
 import { isBlockedDemoCredential, mapRoleToAppRole } from "../lib/repository/users";
@@ -38,7 +40,15 @@ function main() {
   assert.equal(mapRoleToAppRole("ADMIN"), "admin");
   assert.equal(mapRoleToAppRole("DRIVER"), "customer");
   assert.equal(hasPermission("FINANCE", "finance.manage"), true);
+  assert.equal(hasPermission("OPS_MANAGER", "finance.manage"), false);
+  assert.equal(hasPermission("SUPPORT_AGENT", "finance.manage"), false);
+  assert.equal(hasPermission("CUSTOMER", "admin.access"), false);
   assert.equal(isBlockedDemoCredential("admin@necoship.global"), true);
+  assert.equal(
+    existsSync(join(process.cwd(), "app", "api", "admin", "impersonate", "route.ts")),
+    false,
+    "impersonation endpoint must remain removed"
+  );
 
   withEnv({ NODE_ENV: "production", DATABASE_URL: "postgresql://example" }, () => {
     assert.equal(isProductionRuntime(), true);

@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { jsonError, jsonOk, requireAdminSession } from "@/lib/api";
+import { jsonError, jsonOk, requirePermission } from "@/lib/api";
 import { memoryStore } from "@/lib/repository/memory-store";
 
 export async function GET() {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("pricing.view");
   if (error) return error;
   return jsonOk(memoryStore.rateRules ?? []);
 }
@@ -35,7 +35,7 @@ const schema = z.object({
 });
 
 export async function POST(request: Request) {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("pricing.manage");
   if (error) return error;
   const body = await request.json().catch(() => null);
   const parsed = schema.safeParse(body);
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("pricing.manage");
   if (error) return error;
   const id = new URL(request.url).searchParams.get("id");
   if (!id) return jsonError("Missing id", 400);

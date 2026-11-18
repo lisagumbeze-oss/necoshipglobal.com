@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { jsonError, jsonOk, requireAdminSession } from "@/lib/api";
+import { jsonError, jsonOk, requirePermission } from "@/lib/api";
 import { memoryStore } from "@/lib/repository/memory-store";
 import { getLabelProfile, listLabelProfiles, renderThermalLabel } from "@/lib/services/label-profiles";
 
 export async function GET() {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("shipments.view");
   if (error) return error;
   return jsonOk(listLabelProfiles());
 }
@@ -21,7 +21,7 @@ const schema = z.object({
 });
 
 export async function POST(request: Request) {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("shipments.manage");
   if (error) return error;
   const body = await request.json().catch(() => null);
   const parsed = schema.safeParse(body);
@@ -46,7 +46,7 @@ const previewSchema = z.object({
 });
 
 export async function PUT(request: Request) {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("shipments.manage");
   if (error) return error;
   const body = await request.json().catch(() => null);
   const parsed = previewSchema.safeParse(body);

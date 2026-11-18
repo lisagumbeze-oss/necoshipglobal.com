@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { resolveApiKey } from "@/lib/api-keys";
-import { hasPermission, type Permission } from "@/lib/rbac";
+import { hasPermission, isAdminConsoleRole, type Permission } from "@/lib/rbac";
 import { findUserById } from "@/lib/repository/users";
 
 export function jsonOk<T>(data: T, init?: ResponseInit) {
@@ -30,14 +30,47 @@ export async function requireAdminSession() {
   return result;
 }
 
+/**
+ * Resolve trusted staff role from JWT session claim, with fail-closed DB fallback.
+ * Never trusts client-supplied role fields.
+ */
+async function resolveTrustedStaffRole(session: {
+  user: { id?: string; staffRole?: string | null; role: string };
+}): Promise<string | null> {
+  const fromSession = session.user.staffRole?.trim();
+  if (fromSession) return fromSession;
+
+  if (!session.user.id) return null;
+  try {
+    const user = await findUserById(session.user.id);
+    if (user && "role" in user && user.role) return String(user.role);
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+/**
+ * Administrator console + exact permission check.
+ * 401 unauthenticated · 403 no console access or missing permission · fail closed.
+ */
 export async function requirePermission(permission: Permission) {
-  const result = await requireAdminSession();
-  if (result.error || !result.session?.user.id) return result;
-  const user = await findUserById(result.session.user.id);
-  const role = user && "role" in user ? String(user.role) : "ADMIN";
-  if (!hasPermission(role, permission) && role !== "ADMIN") {
+  const result = await requireSession();
+  if (result.error || !result.session) return result;
+
+  if (result.session.user.role !== "admin") {
     return { session: null, error: jsonError("Forbidden", 403) };
   }
+
+  const staffRole = await resolveTrustedStaffRole(result.session);
+  if (!staffRole || !isAdminConsoleRole(staffRole)) {
+    return { session: null, error: jsonError("Forbidden", 403) };
+  }
+
+  if (!hasPermission(staffRole, permission)) {
+    return { session: null, error: jsonError("Forbidden", 403) };
+  }
+
   return result;
 }
 
@@ -67,7 +100,8 @@ export async function requireSessionOrApiKey(request: Request) {
           id: user.id,
           email: user.email,
           name: "name" in user ? user.name : null,
-          role: "customer" as const
+          role: "customer" as const,
+          staffRole: "role" in user ? String(user.role) : "CUSTOMER"
         }
       },
       error: null,

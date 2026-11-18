@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { jsonError, jsonOk, requireAdminSession } from "@/lib/api";
+import { jsonError, jsonOk, requirePermission } from "@/lib/api";
 import { titleStatus } from "@/lib/query-api";
 import { ensureGlobalDemoData } from "@/lib/repository/ensure-demo";
 import { bookShipment } from "@/lib/repository/shipments";
@@ -8,7 +8,7 @@ import { writeAuditLog } from "@/lib/services/audit";
 import { memoryStore } from "@/lib/repository/memory-store";
 
 export async function GET(request: Request) {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("shipments.view");
   if (error) return error;
   ensureGlobalDemoData();
 
@@ -103,7 +103,7 @@ const bookSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const { session, error } = await requireAdminSession();
+  const { session, error } = await requirePermission("shipments.create");
   if (error || !session?.user.id) return error!;
 
   const body = await request.json().catch(() => null);

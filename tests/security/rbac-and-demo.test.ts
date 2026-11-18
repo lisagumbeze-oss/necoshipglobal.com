@@ -25,6 +25,9 @@ describe("SEC-T04/T05/T07 demo credentials and roles", () => {
     expect(hasPermission("FINANCE", "finance.manage")).toBe(true);
     expect(hasPermission("SUPPORT_AGENT", "finance.manage")).toBe(false);
     expect(hasPermission("DRIVER", "admin.access")).toBe(false);
+    expect(hasPermission("OPS_MANAGER", "finance.manage")).toBe(false);
+    expect(hasPermission("CUSTOMS_OFFICER", "finance.view")).toBe(false);
+    expect(hasPermission("ADMIN", "system.configure")).toBe(true);
   });
 });
 

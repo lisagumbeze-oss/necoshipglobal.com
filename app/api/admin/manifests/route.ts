@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { jsonError, jsonOk, requireAdminSession } from "@/lib/api";
+import { jsonError, jsonOk, requirePermission } from "@/lib/api";
 import { ensureGlobalDemoData } from "@/lib/repository/ensure-demo";
 import { memoryStore } from "@/lib/repository/memory-store";
 
 export async function GET() {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("dispatch.view");
   if (error) return error;
   ensureGlobalDemoData();
   return jsonOk(memoryStore.manifests ?? []);
@@ -18,7 +18,7 @@ const schema = z.object({
 
 /** End-of-day closeout: gather day's labeled shipments into a carrier manifest. */
 export async function POST(request: Request) {
-  const { session, error } = await requireAdminSession();
+  const { session, error } = await requirePermission("dispatch.assign");
   if (error || !session) return error!;
   ensureGlobalDemoData();
   const body = await request.json().catch(() => ({}));

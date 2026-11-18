@@ -1,9 +1,9 @@
-import { jsonOk, requireAdminSession } from "@/lib/api";
+import { jsonOk, requirePermission } from "@/lib/api";
 import { ensureGlobalDemoData } from "@/lib/repository/ensure-demo";
 import { memoryStore } from "@/lib/repository/memory-store";
 
 export async function GET(request: Request) {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("shipments.view");
   if (error) return error;
   ensureGlobalDemoData();
 

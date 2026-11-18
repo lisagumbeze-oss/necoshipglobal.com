@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { jsonError, jsonOk, requireAdminSession } from "@/lib/api";
+import { jsonError, jsonOk, requirePermission } from "@/lib/api";
 import { titleStatus } from "@/lib/query-api";
 import { ensureGlobalDemoData } from "@/lib/repository/ensure-demo";
 import { addTrackingEvent } from "@/lib/repository/shipments";
@@ -7,7 +7,7 @@ import { memoryStore } from "@/lib/repository/memory-store";
 import { sendEmail } from "@/lib/services/email";
 
 export async function GET(request: Request) {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("customs.view");
   if (error) return error;
   ensureGlobalDemoData();
 
@@ -64,7 +64,7 @@ const patchSchema = z.object({
 });
 
 export async function PATCH(request: Request) {
-  const { session, error } = await requireAdminSession();
+  const { session, error } = await requirePermission("customs.manage");
   if (error || !session) return error!;
   ensureGlobalDemoData();
 

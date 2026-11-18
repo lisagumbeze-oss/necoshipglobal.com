@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { jsonError, jsonOk, requireAdminSession } from "@/lib/api";
+import { jsonError, jsonOk, requirePermission } from "@/lib/api";
 import { memoryStore } from "@/lib/repository/memory-store";
 import { advanceWave, applyMovement, createPickWave, listInventory } from "@/lib/services/wms";
 
 export async function GET() {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("warehouse.view");
   if (error) return error;
   return jsonOk({
     locations: memoryStore.warehouseLocations,
@@ -44,7 +44,7 @@ const waveSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const { error } = await requireAdminSession();
+  const { error } = await requirePermission("warehouse.operate");
   if (error) return error;
   const body = await request.json().catch(() => null);
 

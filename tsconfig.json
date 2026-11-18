@@ -35,7 +35,8 @@
     ".next/types/**/*.ts",
     ".next-prod/types/**/*.ts",
     ".next-prod-m5/types/**/*.ts",
-    ".next-prod-m63a/types/**/*.ts"
+    ".next-prod-m63a/types/**/*.ts",
+    ".next-prod-m63gc/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
