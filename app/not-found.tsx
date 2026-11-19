@@ -8,12 +8,12 @@ export default function NotFound() {
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">404</p>
           <h1 className="font-display text-3xl font-bold text-brand-navy">Page not found</h1>
           <p className="text-sm text-slate-600">
-            The route you requested does not exist or may have moved. Use dashboard navigation or return to home.
+            The route you requested does not exist or may have moved. Track a shipment or return home.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">
             <ButtonLink href="/">Go Home</ButtonLink>
-            <ButtonLink href="/dashboard" variant="secondary">
-              Open Dashboard
+            <ButtonLink href="/tracking" variant="secondary">
+              Track shipment
             </ButtonLink>
           </div>
         </Card>

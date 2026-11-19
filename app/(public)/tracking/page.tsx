@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Badge, Button, Card, Input, ButtonLink } from "@/components/design-system/ui";
 import { LiveMap } from "@/components/maps";
+import { RecipientActionsPanel } from "@/components/recipient/recipient-actions-panel";
 import { buildTrackingGeo } from "@/lib/maps/tracking-geo";
 import { AlertCircle, Loader2, MapPin, Package, Search } from "lucide-react";
 import { useQuery } from "react-query";
@@ -55,6 +56,7 @@ async function fetchTracking(ids: string[]) {
 
 function TrackingContent() {
   const searchParams = useSearchParams();
+  const recipientToken = searchParams.get("token");
   const [trackingQuery, setTrackingQuery] = useState("");
   const [searched, setSearched] = useState(false);
   const [formatError, setFormatError] = useState("");
@@ -125,10 +127,11 @@ function TrackingContent() {
     <main className="bg-brand-surface">
       <section className="ns-container max-w-ns-xl space-y-6 py-10 md:py-14">
         <header className="mx-auto max-w-2xl space-y-2 text-center">
-          <p className="ns-meta font-semibold uppercase tracking-[0.16em] text-brand-navy">Tracking</p>
+          <p className="ns-meta font-semibold uppercase tracking-[0.16em] text-brand-navy">Receiver hub</p>
           <h1 className="ns-page-title">Track Your Shipment</h1>
           <p className="ns-body text-base">
-            Look up booking status, locations and timeline events when shipment records are available in {BRAND.name}.
+            Look up status, map checkpoints and — with a secure recipient link — manage delivery preferences for{" "}
+            {BRAND.name} shipments.
           </p>
         </header>
 
@@ -253,6 +256,11 @@ function TrackingContent() {
                   emptyMessage="No map coordinates are available for this shipment yet. Timeline details above remain authoritative."
                 />
               </Card>
+              <RecipientActionsPanel
+                token={recipientToken || primary.recipientToken}
+                demonstration={Boolean(primary.demonstration)}
+                trackingNumber={primary.trackingNumber}
+              />
               <Card className="space-y-3 text-sm text-slate-600">
                 <p className="font-semibold text-brand-navy">Need help?</p>
                 <p>If status looks incomplete, contact support with your tracking number.</p>
@@ -260,11 +268,6 @@ function TrackingContent() {
                   <ButtonLink href="/support" variant="secondary">Customer support</ButtonLink>
                   <ButtonLink href="/quote">Get a Quote</ButtonLink>
                 </div>
-                {primary.recipientToken ? (
-                  <Link href={`/recipient/${primary.recipientToken}` as never} className="block text-brand-navy underline">
-                    Open recipient portal
-                  </Link>
-                ) : null}
               </Card>
             </div>
           </div>

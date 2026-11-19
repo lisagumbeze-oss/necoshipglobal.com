@@ -1,14 +1,17 @@
-import { RecipientAccessUnavailable } from "@/components/recipient/recipient-access-unavailable";
+import { redirect } from "next/navigation";
 
 type RecipientTokenPageProps = {
   params: { token: string };
+  searchParams?: Record<string, string | string[] | undefined>;
 };
 
 /**
- * Public recipient entry. Module 2 does not implement secure token verification.
- * We deliberately do not call recipient APIs or treat the path segment as auth.
- * UI for the portal itself is demonstrated via /recipient-preview (development only).
+ * Legacy recipient URL — consolidate into the public tracking receiver hub.
  */
-export default function RecipientTokenPage({ params }: RecipientTokenPageProps) {
-  return <RecipientAccessUnavailable tokenHint={params.token} />;
+export default function RecipientTokenPage({ params, searchParams }: RecipientTokenPageProps) {
+  const q = typeof searchParams?.q === "string" ? searchParams.q : typeof searchParams?.id === "string" ? searchParams.id : "";
+  const sp = new URLSearchParams();
+  sp.set("token", params.token);
+  if (q) sp.set("q", q);
+  redirect(`/tracking?${sp.toString()}` as never);
 }

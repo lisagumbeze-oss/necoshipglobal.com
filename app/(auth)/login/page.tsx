@@ -52,8 +52,11 @@ function LoginForm() {
 
     setError("");
 
-    const defaultTarget = requiredRole === "admin" || next.startsWith("/admin") ? "/admin" : "/dashboard";
-    const destination = next && next.startsWith("/") ? next : defaultTarget;
+    const defaultTarget = "/admin/dashboard";
+    const destination =
+      next && next.startsWith("/") && !next.startsWith("/dashboard") && !next.startsWith("/corporate")
+        ? next
+        : defaultTarget;
 
     if (mode === "google") {
       await signIn("google", { callbackUrl: destination });

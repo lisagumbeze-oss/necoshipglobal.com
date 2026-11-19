@@ -86,7 +86,7 @@ export function SiteHeader() {
             href={"/login" as never}
             className="focus-ring inline-flex min-h-touch items-center justify-center rounded-button bg-brand-navy px-3 text-sm font-semibold text-white hover:bg-brand-navy-800"
           >
-            Customer Login
+            Staff login
           </Link>
         </div>
 
@@ -147,7 +147,7 @@ export function SiteHeader() {
                 onClick={close}
                 className="focus-ring inline-flex min-h-touch items-center justify-center rounded-button bg-brand-navy px-3 text-sm font-semibold text-white"
               >
-                Customer Login
+                Staff login
               </Link>
             </div>
           </div>

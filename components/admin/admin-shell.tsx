@@ -32,16 +32,36 @@ type AdminNavGroup = {
 
 const adminNavCatalog: AdminNavGroup[] = [
   {
+    title: "Command centre",
+    items: [
+      { label: "Admin overview", href: "/admin/dashboard", exact: true, permission: "reporting.view" },
+      { label: "Live operations map", href: "/admin/live-operations", permission: "shipments.view" },
+      { label: "Reports & analytics", href: "/admin/reports", permission: "reporting.view" }
+    ]
+  },
+  {
+    title: "Logistics operations",
+    items: [
+      { label: "Ops shipments", href: "/admin/operations/shipments", permission: "shipments.view" },
+      { label: "Ops exceptions", href: "/admin/operations/exceptions", permission: "shipments.view" },
+      { label: "Ops activities", href: "/admin/operations/activities", permission: "shipments.view" },
+      { label: "Ops reports", href: "/admin/operations/reports", permission: "reporting.view" },
+      { label: "Dispatch queue", href: "/admin/dispatch/queue", permission: "dispatch.view" },
+      { label: "Dispatch routes", href: "/admin/dispatch/routes", permission: "dispatch.view" },
+      { label: "Fleet vehicles", href: "/admin/fleet/vehicles", permission: "fleet.view" },
+      { label: "Fleet drivers", href: "/admin/fleet/drivers", permission: "fleet.view" },
+      { label: "Warehouses", href: "/admin/warehouses", permission: "warehouse.view" },
+      { label: "Deliveries", href: "/admin/deliveries", permission: "dispatch.view" }
+    ]
+  },
+  {
     title: "Operational administration",
     items: [
-      { label: "Administrator overview", href: "/admin/dashboard", exact: true, permission: "reporting.view" },
-      { label: "Reports & analytics", href: "/admin/reports", permission: "reporting.view" },
-      { label: "Live operations", href: "/admin/live-operations", permission: "shipments.view" },
       { label: "Shipments", href: "/admin/shipments", permission: "shipments.view" },
       { label: "Services", href: "/admin/services", permission: "shipments.view" },
       { label: "Locations", href: "/admin/locations", permission: "shipments.view" },
       { label: "Exceptions", href: "/admin/exceptions", permission: "shipments.view" },
-      { label: "Warehouse", href: "/admin/warehouse", permission: "warehouse.view" },
+      { label: "Warehouse (legacy)", href: "/admin/warehouse", permission: "warehouse.view" },
       { label: "Claims", href: "/admin/claims", permission: "support.manage" },
       { label: "Support desk", href: "/admin/support-desk", permission: "support.manage" }
     ]
@@ -101,8 +121,8 @@ function filterAdminNav(staffRole: string | null | undefined): ShellNavGroup[] {
 
 const bottomItems = [
   { label: "Home", href: "/admin/dashboard", exact: true },
-  { label: "Customers", href: "/admin/customers" },
-  { label: "Shipments", href: "/admin/shipments" },
+  { label: "Dispatch", href: "/admin/dispatch/queue" },
+  { label: "Fleet", href: "/admin/fleet/vehicles" },
   { label: "Finance", href: "/admin/finance" },
   { label: "Reports", href: "/admin/reports" }
 ];

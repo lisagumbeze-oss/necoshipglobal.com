@@ -53,10 +53,10 @@ export function OperationsDashboardView() {
         description="UI-44 logistics command overview. Demonstration fixtures only — partner carriers are not claimed as NECO-owned assets."
         actions={
           <>
-            <Link href={"/dispatch/queue" as never}>
+            <Link href={"/admin/dispatch/queue" as never}>
               <Button>Dispatch queue</Button>
             </Link>
-            <Link href={"/operations/exceptions" as never}>
+            <Link href={"/admin/operations/exceptions" as never}>
               <Button variant="secondary">Exceptions</Button>
             </Link>
           </>
@@ -65,8 +65,8 @@ export function OperationsDashboardView() {
 
       <OpsDemoNote title="No live GPS or telemetry">
         <p>
-          Map panels are placeholders until Mapbox and operational feeds are connected. Figures below are labelled
-          demonstration counts — not live network volume.
+          Map panels remain placeholders until operational feeds are connected. Figures below are labelled
+          demonstration counts — not live network volume. This control tower is part of the unified Admin console.
         </p>
       </OpsDemoNote>
 
@@ -117,7 +117,7 @@ export function OperationsDashboardView() {
         <Card className="space-y-3 border-l-4 border-l-brand-danger">
           <div className="flex items-center justify-between gap-2">
             <h2 className="ns-card-title">Exception queue</h2>
-            <Link href={"/operations/exceptions" as never} className="text-sm font-semibold text-brand-navy hover:underline">
+            <Link href={"/admin/operations/exceptions" as never} className="text-sm font-semibold text-brand-navy hover:underline">
               Manage
             </Link>
           </div>
@@ -129,7 +129,7 @@ export function OperationsDashboardView() {
                 <li key={ex.id} className="rounded-input border border-ns-border px-3 py-2 text-sm">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <Link
-                      href={`/operations/exceptions/${ex.id}` as never}
+                      href={`/admin/operations/exceptions/${ex.id}` as never}
                       className="font-mono font-semibold text-brand-navy hover:underline"
                     >
                       {ex.reference}
@@ -171,7 +171,7 @@ export function OperationsDashboardView() {
                 </li>
               ))}
             </ul>
-            <Link href={"/dispatch/queue" as never} className="text-sm font-semibold text-brand-navy hover:underline">
+            <Link href={"/admin/dispatch/queue" as never} className="text-sm font-semibold text-brand-navy hover:underline">
               Open dispatch board
             </Link>
           </div>
@@ -183,7 +183,7 @@ export function OperationsDashboardView() {
             <p className="ns-body max-w-sm">
               Honest placeholder for Mapbox when configured. No simulated GPS movement or live vehicle pins are shown.
             </p>
-            <Link href={"/dispatch/routes" as never}>
+            <Link href={"/admin/dispatch/routes" as never}>
               <Button variant="secondary" size="sm">
                 Route plans
               </Button>
@@ -196,7 +196,7 @@ export function OperationsDashboardView() {
         <Card className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="ns-card-title">Fleet availability</h2>
-            <Link href={"/fleet/vehicles" as never} className="text-sm font-semibold text-brand-navy hover:underline">
+            <Link href={"/admin/fleet/vehicles" as never} className="text-sm font-semibold text-brand-navy hover:underline">
               Fleet
             </Link>
           </div>
@@ -216,7 +216,7 @@ export function OperationsDashboardView() {
         <Card className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="ns-card-title">Warehouse activity</h2>
-            <Link href={"/warehouses/dispatch" as never} className="text-sm font-semibold text-brand-navy hover:underline">
+            <Link href={"/admin/warehouses/dispatch" as never} className="text-sm font-semibold text-brand-navy hover:underline">
               Loading
             </Link>
           </div>
@@ -238,7 +238,7 @@ export function OperationsDashboardView() {
         <Card className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="ns-card-title">Operational alerts</h2>
-            <Link href={"/operations/activities" as never} className="text-sm font-semibold text-brand-navy hover:underline">
+            <Link href={"/admin/operations/activities" as never} className="text-sm font-semibold text-brand-navy hover:underline">
               Timeline
             </Link>
           </div>
@@ -260,7 +260,7 @@ export function OperationsDashboardView() {
         <Card className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="ns-card-title">Recent operational events</h2>
-            <Link href={"/operations/activities" as never} className="text-sm font-semibold text-brand-navy hover:underline">
+            <Link href={"/admin/operations/activities" as never} className="text-sm font-semibold text-brand-navy hover:underline">
               All activity
             </Link>
           </div>
@@ -280,7 +280,7 @@ export function OperationsDashboardView() {
         <Card className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="ns-card-title">Shipment activity board</h2>
-            <Link href={"/operations/shipments" as never} className="text-sm font-semibold text-brand-navy hover:underline">
+            <Link href={"/admin/operations/shipments" as never} className="text-sm font-semibold text-brand-navy hover:underline">
               All shipments
             </Link>
           </div>
@@ -289,7 +289,7 @@ export function OperationsDashboardView() {
               <li key={s.id} className="flex flex-wrap items-center justify-between gap-2 py-2.5 text-sm">
                 <div>
                   <Link
-                    href={`/operations/shipments/${s.trackingNumber}` as never}
+                    href={`/admin/operations/shipments/${s.trackingNumber}` as never}
                     className="font-mono font-semibold text-brand-navy hover:underline"
                   >
                     {s.trackingNumber}

@@ -12,6 +12,14 @@ export default function BookingConfirmationPage({ searchParams }: Props) {
   const tracking = typeof searchParams.tracking === "string" ? searchParams.tracking : "";
   const recipientToken = typeof searchParams.recipientToken === "string" ? searchParams.recipientToken : "";
 
+  const trackingHref = (() => {
+    const sp = new URLSearchParams();
+    if (tracking) sp.set("q", tracking);
+    if (recipientToken) sp.set("token", recipientToken);
+    const qs = sp.toString();
+    return qs ? `/tracking?${qs}` : "/tracking";
+  })();
+
   return (
     <main className="min-h-screen bg-brand-surface px-4 py-10 md:px-8">
       <section className="mx-auto max-w-3xl">
@@ -24,7 +32,7 @@ export default function BookingConfirmationPage({ searchParams }: Props) {
           </h1>
           <p className="text-sm text-slate-600">
             {tracking
-              ? "Payment captured and carrier label created. Track below or claim this shipment after you create an account with the same email."
+              ? "Payment captured and carrier label created. Track the shipment or open receiver preferences from the tracking hub."
               : "Your shipment has been queued for operations review."}
           </p>
           <div className="rounded-input border border-slate-200 bg-slate-50 p-4 text-left text-sm">
@@ -44,19 +52,11 @@ export default function BookingConfirmationPage({ searchParams }: Props) {
             </p>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <ButtonLink href={tracking ? `/tracking?id=${encodeURIComponent(tracking)}` : "/tracking"}>
-              Track Shipment
+            <ButtonLink href={trackingHref as never}>
+              {recipientToken ? "Open receiver tracking hub" : "Track Shipment"}
             </ButtonLink>
-            {recipientToken ? (
-              <ButtonLink href={`/recipient/${recipientToken}`} variant="secondary">
-                Recipient portal
-              </ButtonLink>
-            ) : null}
-            <ButtonLink href="/register" variant="secondary">
-              Create account to claim
-            </ButtonLink>
-            <ButtonLink href="/dashboard" variant="ghost">
-              Open Dashboard
+            <ButtonLink href="/support" variant="secondary">
+              Customer support
             </ButtonLink>
           </div>
         </Card>

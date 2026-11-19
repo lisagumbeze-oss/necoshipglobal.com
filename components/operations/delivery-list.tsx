@@ -31,7 +31,7 @@ function DeliveryRow({ delivery: d }: { delivery: DemoDelivery }) {
   return (
     <Card className="flex flex-wrap items-center justify-between gap-3 text-sm">
       <div>
-        <Link href={`/deliveries/${d.id}` as never} className="font-mono font-semibold text-brand-navy hover:underline">
+        <Link href={`/admin/deliveries/${d.id}` as never} className="font-mono font-semibold text-brand-navy hover:underline">
           {d.reference}
         </Link>
         <p className="text-slate-600">

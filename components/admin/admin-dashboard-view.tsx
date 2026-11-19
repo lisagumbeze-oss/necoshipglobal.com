@@ -40,10 +40,13 @@ export function AdminDashboardView() {
         description="UI-28 enterprise management overview. Counts below are demonstration fixture tallies — not fabricated live company performance."
         actions={
           <>
-            <ButtonLink href="/admin/reports" variant="secondary">
-              Reports
+            <ButtonLink href="/admin/dispatch/queue" variant="secondary">
+              Dispatch
             </ButtonLink>
             <ButtonLink href="/admin/finance">Finance</ButtonLink>
+            <ButtonLink href="/admin/reports" variant="ghost">
+              Reports
+            </ButtonLink>
           </>
         }
       />

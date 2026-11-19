@@ -4,12 +4,9 @@ import { getToken } from "next-auth/jwt";
 import type { AppRole } from "@/lib/auth";
 import {
   canAccessAdminRoutes,
-  canAccessUserRoutes,
   isAdminPathname,
   isAuthLoginRegisterPathname,
-  isCorporatePathname,
-  isOperationsPathname,
-  isUserAppPathname
+  isOperationsPathname
 } from "@/lib/auth-routes";
 
 const INSECURE_DEV_SECRET = "dev-nextauth-secret";
@@ -39,26 +36,53 @@ function redirectToLogin(request: NextRequest, opts: { nextPath: string; require
   return NextResponse.redirect(url);
 }
 
+/** Map legacy operations URLs into the unified admin console. */
+function legacyOpsRedirect(pathname: string): string | null {
+  if (pathname === "/operations" || pathname === "/operations/dashboard") return "/admin/dashboard";
+  if (pathname.startsWith("/operations/")) {
+    const rest = pathname.slice("/operations".length);
+    return `/admin/operations${rest}`;
+  }
+  if (pathname === "/fleet" || pathname.startsWith("/fleet/")) return `/admin${pathname}`;
+  if (pathname === "/warehouses" || pathname.startsWith("/warehouses/")) return `/admin${pathname}`;
+  if (pathname === "/dispatch" || pathname.startsWith("/dispatch/")) return `/admin${pathname}`;
+  if (pathname === "/deliveries" || pathname.startsWith("/deliveries/")) return `/admin${pathname}`;
+  return null;
+}
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const role = await roleFromRequest(request);
 
-  // Signed-in users don't need the marketing sign-in / sign-up again.
-  if (isAuthLoginRegisterPathname(pathname) && (role === "customer" || role === "admin")) {
-    if (role === "admin") {
-      return NextResponse.redirect(new URL("/admin", request.url));
-    }
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  // Legacy customer / corporate portals removed — send bookmarks to tracking or login.
+  if (
+    pathname === "/dashboard" ||
+    pathname.startsWith("/dashboard/") ||
+    pathname === "/shipments" ||
+    pathname.startsWith("/shipments/") ||
+    pathname === "/corporate" ||
+    pathname.startsWith("/corporate/")
+  ) {
+    return NextResponse.redirect(new URL("/tracking", request.url));
   }
 
-  if (isUserAppPathname(pathname) || isCorporatePathname(pathname)) {
-    if (!canAccessUserRoutes(role)) {
-      return redirectToLogin(request, { nextPath: pathname });
-    }
-    return NextResponse.next();
+  const opsTarget = legacyOpsRedirect(pathname);
+  if (opsTarget) {
+    return NextResponse.redirect(new URL(opsTarget, request.url));
   }
 
-  // Internal ops / fleet / warehouse / dispatch / deliveries — admin only (no auth bypass).
+  // Signed-in staff: skip marketing auth screens.
+  if (isAuthLoginRegisterPathname(pathname) && role === "admin") {
+    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+  }
+  if (pathname === "/register") {
+    return NextResponse.redirect(new URL("/login?requiredRole=admin", request.url));
+  }
+  if (isAuthLoginRegisterPathname(pathname) && role === "customer") {
+    // Customer portal removed — guests go to tracking after any residual customer session.
+    return NextResponse.redirect(new URL("/tracking", request.url));
+  }
+
   if (isOperationsPathname(pathname) || isAdminPathname(pathname)) {
     if (!canAccessAdminRoutes(role)) {
       return redirectToLogin(request, { nextPath: pathname, requireAdmin: true });

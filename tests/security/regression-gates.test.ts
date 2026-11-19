@@ -7,10 +7,13 @@ describe("Module 6.3G/C regression gates", () => {
     expect(existsSync(path.join(process.cwd(), "app", "(public)", "page.tsx"))).toBe(true);
   });
 
-  it("keeps customer and recipient auth route helpers intact", () => {
+  it("keeps staff admin auth route helpers intact", () => {
     const authRoutes = readFileSync(path.join(process.cwd(), "lib", "auth-routes.ts"), "utf8");
-    expect(authRoutes).toMatch(/customer|portal|recipient/i);
     expect(authRoutes).toContain("isAdminPathname");
+    expect(authRoutes).toContain("canAccessAdminRoutes");
+    // Customer / corporate portals removed — helpers remain as false stubs only.
+    expect(authRoutes).toContain("isUserAppPathname");
+    expect(authRoutes).toMatch(/return false/);
   });
 
   it("keeps middleware protection without public admin API exceptions", () => {
@@ -18,6 +21,20 @@ describe("Module 6.3G/C regression gates", () => {
     expect(mw).toContain("matcher");
     expect(mw).not.toMatch(/api\/admin.*public/i);
     expect(mw).toContain("/admin");
+    expect(mw).toContain("legacyOpsRedirect");
+    expect(mw).toContain("/tracking");
+    // Legacy customer portal bookmarks redirect to tracking.
+    expect(mw).toMatch(/pathname === "\/dashboard"/);
+  });
+
+  it("consolidates staff UI under admin and public tracking hub", () => {
+    expect(existsSync(path.join(process.cwd(), "app", "(public)", "tracking", "page.tsx"))).toBe(true);
+    expect(existsSync(path.join(process.cwd(), "app", "(admin)", "admin", "fleet", "page.tsx"))).toBe(true);
+    expect(existsSync(path.join(process.cwd(), "app", "(admin)", "admin", "dispatch", "page.tsx"))).toBe(true);
+    expect(existsSync(path.join(process.cwd(), "components", "operations", "operations-shell.tsx"))).toBe(false);
+    expect(existsSync(path.join(process.cwd(), "app", "(dashboard)"))).toBe(false);
+    expect(existsSync(path.join(process.cwd(), "app", "(corporate)"))).toBe(false);
+    expect(existsSync(path.join(process.cwd(), "app", "(operations)"))).toBe(false);
   });
 
   it("keeps administrator preview production 404", () => {
