@@ -1,9 +1,4 @@
-import {
-  DatabaseUnavailableError,
-  isDatabaseConfigured,
-  mustUseDatabase,
-  prisma
-} from "@/lib/db";
+import { isDatabaseConfigured, mustUseDatabase, prisma } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { allowMemoryStore } from "@/lib/runtime";
 import { memoryStore } from "@/lib/repository/memory-store";
@@ -31,15 +26,15 @@ export async function writeAuditLog(input: {
       });
       return;
     } catch (error) {
+      // Best-effort: never fail the caller (e.g. login) solely because audit write failed.
       logger.warn("audit.db_failed", {
         error: error instanceof Error ? error.message : String(error)
       });
-      if (mustUseDatabase()) {
-        throw new DatabaseUnavailableError("Failed to persist audit log");
-      }
+      return;
     }
   } else if (mustUseDatabase()) {
-    throw new DatabaseUnavailableError("DATABASE_URL is required for audit logging");
+    logger.warn("audit.skipped_no_database", { action: input.action });
+    return;
   }
 
   if (!allowMemoryStore()) return;

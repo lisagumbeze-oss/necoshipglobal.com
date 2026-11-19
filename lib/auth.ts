@@ -59,7 +59,9 @@ export const authOptions: NextAuthOptions = {
   },
   secret: env.nextAuthSecret,
   pages: {
-    signIn: "/login"
+    signIn: "/login",
+    // Avoid NextAuth's /api/auth/error HTML (500s when misconfigured); surface on login instead.
+    error: "/login"
   },
   providers: [
     CredentialsProvider({
@@ -91,12 +93,17 @@ export const authOptions: NextAuthOptions = {
 
         const staffRole = String(user.role);
         const role = mapRoleToAppRole(staffRole);
-        await writeAuditLog({
-          userId: user.id,
-          action: "auth.login",
-          entityType: "User",
-          entityId: user.id
-        });
+        // Never fail authentication because audit persistence is unavailable.
+        try {
+          await writeAuditLog({
+            userId: user.id,
+            action: "auth.login",
+            entityType: "User",
+            entityId: user.id
+          });
+        } catch {
+          /* logged inside writeAuditLog; continue sign-in */
+        }
 
         return {
           id: user.id,

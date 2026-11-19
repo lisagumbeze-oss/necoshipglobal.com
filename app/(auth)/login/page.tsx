@@ -2,11 +2,21 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { Button, Card, Input } from "@/components/design-system/ui";
 import { BRAND } from "@/lib/brand";
+
+function authErrorMessage(code: string | null) {
+  if (!code) return "";
+  if (code === "Configuration") {
+    return "Sign-in is misconfigured on the server (NEXTAUTH_URL / NEXTAUTH_SECRET). Contact the site administrator.";
+  }
+  if (code === "AccessDenied") return "Access denied for this account.";
+  if (code === "Verification") return "The sign-in link is no longer valid. Request a new one.";
+  return "Sign-in failed. Try again.";
+}
 
 function LoginForm() {
   const router = useRouter();
@@ -21,6 +31,12 @@ function LoginForm() {
 
   const next = searchParams.get("next") ?? "";
   const requiredRole = searchParams.get("requiredRole") ?? "";
+  const authError = searchParams.get("error");
+
+  useEffect(() => {
+    const message = authErrorMessage(authError);
+    if (message) setError(message);
+  }, [authError]);
 
   const handleSignIn = async (mode: "password" | "google") => {
     if (mode === "password") {
