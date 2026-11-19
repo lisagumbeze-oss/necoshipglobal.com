@@ -35,6 +35,7 @@ export const env = {
     .filter(Boolean),
   sanctionsApiUrl: optional("SANCTIONS_API_URL"),
   sanctionsApiKey: optional("SANCTIONS_API_KEY"),
+  /** @deprecated Maps use MapLibre + OSM; kept only for legacy env compatibility. */
   mapboxToken: optional("NEXT_PUBLIC_MAPBOX_TOKEN"),
   resendApiKey: optional("RESEND_API_KEY"),
   emailFrom: optional("EMAIL_FROM") ?? "Neco Ship Global <support@necoshipglobal.com>",

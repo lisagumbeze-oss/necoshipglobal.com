@@ -1,16 +1,33 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo } from "react";
 import { Button, Card } from "@/components/design-system/ui";
+import { LiveMap } from "@/components/maps";
 import { DashboardPageHeader } from "@/components/dashboard/page-header";
 import { ShipmentStatusBadge } from "@/components/dashboard/status-badge";
 import { ShipmentTimeline } from "@/components/dashboard/shipment-timeline";
 import { DEMO_DATA_NOTICE, getDemoShipment } from "@/lib/demo/customer-fixtures";
+import { buildTrackingGeo } from "@/lib/maps/tracking-geo";
 import { getShipmentStatus } from "@/lib/demo/shipment-status";
 import { MapPin, Package } from "lucide-react";
 
 export default function ShipmentDetailPage({ params }: { params: { trackingId: string } }) {
   const shipment = getDemoShipment(params.trackingId);
+  const mapGeo = useMemo(
+    () =>
+      buildTrackingGeo(
+        (shipment?.events ?? []).map((event) => ({
+          id: event.id,
+          label: event.title,
+          description: event.description,
+          location: event.location,
+          lat: event.lat,
+          lng: event.lng
+        }))
+      ),
+    [shipment]
+  );
   if (!shipment) {
     return (
       <section className="mx-auto max-w-3xl space-y-4">
@@ -98,25 +115,25 @@ export default function ShipmentDetailPage({ params }: { params: { trackingId: s
               <ShipmentStatusBadge status={shipment.status} />
             </div>
 
-            {/* UI-42 route schematic — no invented GPS */}
-            <div className="rounded-card border border-ns-border bg-brand-surface-muted p-4">
-              <p className="ns-meta mb-3 font-semibold uppercase tracking-wide">Route overview</p>
-              <div className="flex items-center gap-3">
-                <div className="min-w-0 flex-1">
-                  <p className="flex items-center gap-1 text-xs font-semibold text-slate-500">
-                    <MapPin size={12} aria-hidden /> Origin
+            {/* UI-42 route map — coordinates from demo events only when present */}
+            <div className="space-y-3 rounded-card border border-ns-border bg-brand-surface-muted p-4">
+              <div className="flex flex-wrap items-end justify-between gap-2">
+                <div>
+                  <p className="ns-meta mb-1 font-semibold uppercase tracking-wide">Route overview</p>
+                  <p className="flex items-center gap-1 text-sm text-brand-navy">
+                    <MapPin size={14} aria-hidden />
+                    {shipment.origin} → {shipment.destination}
                   </p>
-                  <p className="truncate font-semibold text-brand-navy">{shipment.origin}</p>
                 </div>
-                <div className="hidden h-px flex-1 bg-brand-navy/30 sm:block" aria-hidden />
-                <div className="min-w-0 flex-1 text-right sm:text-left">
-                  <p className="flex items-center justify-end gap-1 text-xs font-semibold text-slate-500 sm:justify-start">
-                    <MapPin size={12} aria-hidden /> Destination
-                  </p>
-                  <p className="truncate font-semibold text-brand-navy">{shipment.destination}</p>
-                </div>
+                <p className="ns-meta">Reported location: {shipment.currentLocation ?? "Not available"}</p>
               </div>
-              <ol className="mt-4 flex justify-between gap-1" aria-label="Shipment milestones">
+              <LiveMap
+                className="h-64 border-ns-border"
+                points={mapGeo.points}
+                route={mapGeo.route}
+                emptyMessage="No demonstration coordinates on this shipment. Milestone schematic remains below."
+              />
+              <ol className="flex justify-between gap-1" aria-label="Shipment milestones">
                 {milestones.map((m, index) => {
                   const done = activeIndex >= 0 && index <= activeIndex;
                   const current = activeIndex >= 0 && index === activeIndex;
@@ -133,9 +150,8 @@ export default function ShipmentDetailPage({ params }: { params: { trackingId: s
                   );
                 })}
               </ol>
-              <p className="ns-meta mt-3">
-                Schematic milestones only — not live GPS movement. Reported location:{" "}
-                {shipment.currentLocation ?? "Not available"}.
+              <p className="ns-meta">
+                Map pins use labelled demonstration coordinates when present — not live carrier GPS telemetry.
               </p>
             </div>
 

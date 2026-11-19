@@ -7,7 +7,14 @@ import { useMemo } from "react";
 import { useQuery } from "react-query";
 import { apiQuery } from "@/lib/query-api";
 import { useDashboardFilters } from "@/lib/dashboard-store";
-import { MapboxLivePanel } from "@/components/maps/mapbox-live-panel";
+import { LiveMap } from "@/components/maps";
+
+const NETWORK_HUB_POINTS = [
+  { id: "1", lng: -118.2437, lat: 34.0522, label: "LAX Hub", kind: "hub" },
+  { id: "2", lng: 139.6917, lat: 35.6895, label: "Tokyo", kind: "hub" },
+  { id: "3", lng: 103.8198, lat: 1.3521, label: "Singapore", kind: "hub" },
+  { id: "4", lng: 13.405, lat: 52.52, label: "Berlin", kind: "hub" }
+];
 
 type LiveOpsRecord = {
   id: string;
@@ -50,10 +57,12 @@ export default function LiveOperationsMapPage() {
         <header className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h1 className="font-display text-3xl font-bold text-brand-navy">Live Operations Map</h1>
-            <p className="text-sm text-slate-600">Global operational visibility with status filters and drill-down actions.</p>
+            <p className="text-sm text-slate-600">
+              Network hub map and filtered operations feed. Hub pins are fixed reference locations — not live vehicle GPS.
+            </p>
           </div>
-          <Badge tone="success">
-            <Radio size={14} /> Refreshing every 30 seconds
+          <Badge tone="warning">
+            <Radio size={14} /> Hub reference map · OSM
           </Badge>
         </header>
 
@@ -68,16 +77,11 @@ export default function LiveOperationsMapPage() {
 
         <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
           <Card className="space-y-3">
-            <p className="font-semibold text-brand-navy">Global Live Map</p>
-            <MapboxLivePanel
-              className="h-80"
-              points={[
-                { id: "1", lng: -118.2437, lat: 34.0522, label: "LAX Hub" },
-                { id: "2", lng: 139.6917, lat: 35.6895, label: "Tokyo" },
-                { id: "3", lng: 103.8198, lat: 1.3521, label: "Singapore" },
-                { id: "4", lng: 13.405, lat: 52.52, label: "Berlin" }
-              ]}
-            />
+            <p className="font-semibold text-brand-navy">Network hub map</p>
+            <p className="ns-meta">
+              MapLibre + OpenStreetMap. Pins mark labelled network hubs for orientation — not simulated live asset movement.
+            </p>
+            <LiveMap className="h-80" points={NETWORK_HUB_POINTS} />
             {query.isLoading ? (
               <div className="grid gap-2 sm:grid-cols-2">
                 {[1, 2, 3, 4].map((i) => (

@@ -23,6 +23,9 @@ export type DemoTimelineEvent = {
   location: string;
   timestamp: string;
   status: ShipmentStatusCode;
+  /** Optional demonstration coordinates for MapLibre preview — not live carrier GPS. */
+  lat?: number | null;
+  lng?: number | null;
 };
 
 export type DemoShipment = {
@@ -188,7 +191,9 @@ export const demoShipments: DemoShipment[] = [
         description: "Demonstration booking created for UI preview.",
         location: "Los Angeles, US",
         timestamp: "2026-11-02T10:15:00.000Z",
-        status: "BOOKED"
+        status: "BOOKED",
+        lat: 34.0522,
+        lng: -118.2437
       },
       {
         id: "ev2",
@@ -196,15 +201,19 @@ export const demoShipments: DemoShipment[] = [
         description: "Sample collection event for timeline display.",
         location: "Los Angeles, US",
         timestamp: "2026-11-03T09:40:00.000Z",
-        status: "COLLECTED"
+        status: "COLLECTED",
+        lat: 33.9425,
+        lng: -118.4081
       },
       {
         id: "ev3",
         title: "In transit",
         description: "Sample linehaul event — not a live carrier update.",
-        location: "Transatlantic corridor (demo)",
+        location: "Chicago gateway (demo)",
         timestamp: "2026-11-04T18:20:00.000Z",
-        status: "IN_TRANSIT"
+        status: "IN_TRANSIT",
+        lat: 41.9742,
+        lng: -87.9073
       }
     ]
   },
@@ -232,12 +241,24 @@ export const demoShipments: DemoShipment[] = [
     deliveryInfo: "Signed for by S. Rivera (sample proof-of-delivery preview).",
     events: [
       {
+        id: "ev4a",
+        title: "Collected",
+        description: "Sample collection event for UI only.",
+        location: "Chicago, US",
+        timestamp: "2026-10-29T09:00:00.000Z",
+        status: "COLLECTED",
+        lat: 41.8781,
+        lng: -87.6298
+      },
+      {
         id: "ev4",
         title: "Delivered",
         description: "Sample delivery completion event for UI only.",
         location: "Toronto, CA",
         timestamp: "2026-11-01T11:42:00.000Z",
-        status: "DELIVERED"
+        status: "DELIVERED",
+        lat: 43.6532,
+        lng: -79.3832
       }
     ]
   },
@@ -265,12 +286,24 @@ export const demoShipments: DemoShipment[] = [
     deliveryInfo: null,
     events: [
       {
+        id: "ev5a",
+        title: "Departed origin",
+        description: "Sample ocean departure for interface preview.",
+        location: "Los Angeles, US",
+        timestamp: "2026-11-11T08:00:00.000Z",
+        status: "IN_TRANSIT",
+        lat: 33.7405,
+        lng: -118.271
+      },
+      {
         id: "ev5",
         title: "Customs processing",
         description: "Sample customs milestone for interface preview.",
         location: "Singapore, SG",
         timestamp: "2026-11-14T07:10:00.000Z",
-        status: "CUSTOMS_PROCESSING"
+        status: "CUSTOMS_PROCESSING",
+        lat: 1.3644,
+        lng: 103.9915
       }
     ]
   },
@@ -331,12 +364,24 @@ export const demoShipments: DemoShipment[] = [
     deliveryInfo: null,
     events: [
       {
+        id: "ev7a",
+        title: "In transit",
+        description: "Sample linehaul before exception — demonstration only.",
+        location: "Seattle, US",
+        timestamp: "2026-11-06T14:00:00.000Z",
+        status: "IN_TRANSIT",
+        lat: 47.4502,
+        lng: -122.3088
+      },
+      {
         id: "ev7",
         title: "Exception",
         description: "Sample exception state for UI — address clarification required.",
         location: "London gateway (demo)",
         timestamp: "2026-11-08T09:05:00.000Z",
-        status: "EXCEPTION"
+        status: "EXCEPTION",
+        lat: 51.47,
+        lng: -0.4543
       }
     ]
   }

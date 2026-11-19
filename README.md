@@ -25,11 +25,15 @@ npm run dev
 ```
 
 ### Administrator provisioning
-Default admin/demo accounts are **not** auto-created at runtime.
+Default demo accounts are **not** auto-created at runtime. Live admin is provisioned explicitly via env:
 
 ```bash
-npx tsx scripts/provision-admin.ts --email you@necoshipglobal.com --password 'StrongUniquePass1'
+# Set SEED_ADMIN_EMAIL / SEED_ADMIN_PASSWORD in .env, then:
+npm run provision:admin
+# or: npx tsx scripts/provision-admin.ts --email support@necoshipglobal.com --password '…'
 ```
+
+Sign in at `/login` with `support@necoshipglobal.com` (password from your local `SEED_ADMIN_PASSWORD`).
 
 See [docs/runbooks/security-operations.md](docs/runbooks/security-operations.md).
 

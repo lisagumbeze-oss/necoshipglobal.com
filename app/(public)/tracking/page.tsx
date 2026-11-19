@@ -4,6 +4,8 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Badge, Button, Card, Input, ButtonLink } from "@/components/design-system/ui";
+import { LiveMap } from "@/components/maps";
+import { buildTrackingGeo } from "@/lib/maps/tracking-geo";
 import { AlertCircle, Loader2, MapPin, Package, Search } from "lucide-react";
 import { useQuery } from "react-query";
 import { BRAND } from "@/lib/brand";
@@ -18,11 +20,14 @@ type TrackingShipment = {
   eta?: string | null;
   currentLocation?: string | null;
   recipientToken?: string | null;
+  demonstration?: boolean;
   events?: Array<{
     description: string;
     location?: string | null;
     occurredAt: string;
     status?: string | null;
+    lat?: number | null;
+    lng?: number | null;
   }>;
 };
 
@@ -81,6 +86,19 @@ function TrackingContent() {
   });
 
   const primary = query.data?.shipments[0];
+  const mapGeo = useMemo(
+    () =>
+      buildTrackingGeo(
+        (primary?.events ?? []).map((event, index) => ({
+          id: `${primary?.trackingNumber ?? "trk"}-${index}`,
+          description: event.description,
+          location: event.location,
+          lat: event.lat,
+          lng: event.lng
+        }))
+      ),
+    [primary]
+  );
 
   const onTrack = () => {
     setFormatError("");
@@ -218,6 +236,23 @@ function TrackingContent() {
             </Card>
 
             <div className="space-y-4">
+              <Card className="space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="font-semibold text-brand-navy">Route map</p>
+                  {primary.demonstration ? (
+                    <Badge tone="warning">Demonstration coordinates</Badge>
+                  ) : null}
+                </div>
+                <p className="ns-meta">
+                  Pins and route lines use recorded event coordinates only — not simulated live GPS movement.
+                </p>
+                <LiveMap
+                  className="h-72"
+                  points={mapGeo.points}
+                  route={mapGeo.route}
+                  emptyMessage="No map coordinates are available for this shipment yet. Timeline details above remain authoritative."
+                />
+              </Card>
               <Card className="space-y-3 text-sm text-slate-600">
                 <p className="font-semibold text-brand-navy">Need help?</p>
                 <p>If status looks incomplete, contact support with your tracking number.</p>
