@@ -22,15 +22,11 @@ export type TrackingGeoResult = {
   hasCoordinates: boolean;
 };
 
-function isFiniteCoord(lat: unknown, lng: unknown): lat is number {
-  return (
-    typeof lat === "number" &&
-    typeof lng === "number" &&
-    Number.isFinite(lat) &&
-    Number.isFinite(lng) &&
-    Math.abs(lat) <= 90 &&
-    Math.abs(lng) <= 180
-  );
+function parseCoord(lat: unknown, lng: unknown): { lat: number; lng: number } | null {
+  if (typeof lat !== "number" || typeof lng !== "number") return null;
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
+  return { lat, lng };
 }
 
 /** Collect plottable points and an ordered polyline from events that already have coordinates. */
@@ -38,7 +34,8 @@ export function buildTrackingGeo(events: GeoPointInput[]): TrackingGeoResult {
   const points: LiveMapPoint[] = [];
 
   events.forEach((event, index) => {
-    if (!isFiniteCoord(event.lat, event.lng)) return;
+    const coords = parseCoord(event.lat, event.lng);
+    if (!coords) return;
     const label =
       event.label?.trim() ||
       event.location?.trim() ||
@@ -46,8 +43,8 @@ export function buildTrackingGeo(events: GeoPointInput[]): TrackingGeoResult {
       `Event ${index + 1}`;
     points.push({
       id: event.id ?? `geo-${index}`,
-      lat: event.lat,
-      lng: event.lng,
+      lat: coords.lat,
+      lng: coords.lng,
       label,
       kind: event.kind
     });

@@ -61,7 +61,6 @@ export function LiveMap({
     async function boot() {
       try {
         const maplibre = await import("maplibre-gl");
-        await import("maplibre-gl/dist/maplibre-gl.css");
         if (!containerRef.current || disposed) return;
 
         const maplibregl = maplibre.default;
